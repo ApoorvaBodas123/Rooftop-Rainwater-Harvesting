@@ -1,0 +1,95 @@
+{
+  "app": {
+    "title": "Rainwater Harvesting Assessment",
+    "description": "Smart assessment tool for rooftop rainwater harvesting potential",
+    "tagline": "Save Water, Secure Future"
+  },
+  "navigation": {
+    "home": "Home",
+    "assessment": "Start Assessment",
+    "results": "Results",
+    "language": "भाषा",
+    "selectLanguage": "Select Language",
+    "back": "Back"
+  },
+  "landing": {
+    "heroTitle": "Rooftop Rainwater Harvesting Assessment",
+    "heroSubtitle": "Check your water harvesting and recharge potential in minutes",
+    "wastedWater": "India wastes over {{amount}} billion liters of rainwater annually. Let's change that.",
+    "startButton": "Start Assessment",
+    "features": {
+      "title": "How It Works",
+      "items": [
+        {
+          "title": "Enter Your Location",
+          "description": "Pin your location on the map or enter your address manually."
+        },
+        {
+          "title": "Provide Roof Details",
+          "description": "Enter your roof area and type to get accurate calculations."
+        },
+        {
+          "title": "Get Instant Results",
+          "description": "Receive a detailed report with actionable insights."
+        }
+      ]
+    }
+  },
+  "assessment": {
+    "title": "Rainwater Harvesting Assessment",
+    "subtitle": "Fill in the details below to get your personalized report.",
+    "location": "Location",
+    "locationPlaceholder": "Search for your address",
+    "useMyLocation": "Use my current location",
+    "roofDetails": "Roof Details",
+    "roofArea": "Roof Area (sq. ft)",
+    "roofAreaTooltip": "Total area of your roof that will collect rainwater",
+    "roofType": "Roof Type",
+    "roofTypeTooltip": "Select the material of your roof for accurate calculations",
+    "roofTypes": {
+      "concrete": "Concrete",
+      "metal": "Metal",
+      "tiled": "Tiled",
+      "other": "Other"
+    },
+    "rainfall": "Average Annual Rainfall (mm)",
+    "rainfallTooltip": "Average annual rainfall in your area (in millimeters)",
+    "waterDemand": "Daily Water Demand (liters)",
+    "waterDemandTooltip": "Your average daily water usage for non-potable purposes",
+    "drawRoof": "Draw Roof Area on Map",
+    "drawingActive": "Click on map to draw roof area",
+    "calculatedArea": "Calculated Area",
+    "calculate": "Calculate Potential",
+    "locationRequired": "Please select a location",
+    "roofAreaNumber": "Please enter a valid number",
+    "roofAreaRequired": "Roof area is required",
+    "roofAreaPositive": "Roof area must be positive",
+    "roofTypeRequired": "Roof type is required",
+    "rainfallNumber": "Please enter a valid number",
+    "rainfallRequired": "Rainfall is required",
+    "rainfallMin": "Rainfall cannot be negative",
+    "waterDemandNumber": "Please enter a valid number",
+    "waterDemandRequired": "Water demand is required",
+    "waterDemandMin": "Water demand must be at least 1 liter"
+  },
+  "results": {
+    "title": "Your Rainwater Harvesting Potential",
+    "subtitle": "Here's what we found for your location",
+    "annualHarvest": "Annual Rainwater Harvest",
+    "monthlyHarvest": "Monthly Average",
+    "dailyHarvest": "Daily Average",
+    "recommendation": "Recommended System",
+    "estimatedCost": "Estimated Cost",
+    "paybackPeriod": "Payback Period",
+    "environmentalImpact": "Environmental Impact",
+    "waterSaved": "Water Saved/Year",
+    "co2Reduction": "CO₂ Reduction/Year",
+    "downloadReport": "Download Full Report",
+    "startNewAssessment": "Start New Assessment"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "The page you're looking for doesn't exist or has been moved.",
+    "goHome": "Go to Homepage"
+  }
+}
