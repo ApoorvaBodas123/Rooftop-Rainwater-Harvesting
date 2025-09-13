@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { 
   Box, 
   Button, 
@@ -8,194 +7,368 @@ import {
   Typography, 
   Card, 
   CardContent, 
+  styled,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Menu,
+  MenuItem,
+  useMediaQuery,
   useTheme
 } from '@mui/material';
+import type { Theme } from '@mui/material';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import NatureIcon from '@mui/icons-material/Nature'; // Replacing EcoIcon
-// Language selector component is currently not available
+import NatureIcon from '@mui/icons-material/Nature';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useState, useEffect } from 'react';
+
+// Colors
+const secondaryColor = '#000000ff';
+const accentColor = '#FFFFFF';
+
+// Page background wrapper
+const PageWrapper = styled(Box)(() => ({
+  backgroundImage: 'url("https://static.vecteezy.com/system/resources/previews/041/731/486/large_2x/ai-generated-water-drop-close-up-with-yellow-light-background-free-photo.jpeg")',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundAttachment: 'fixed',
+  minHeight: '100vh',
+  width: '100%',
+}));
+
+// Overlay wrapper (used for BOTH hero + features for seamless blend)
+const OverlayWrapper = styled(Box)(() => ({
+  background: 'linear-gradient(rgba(0, 77, 64, 0.7), rgba(0, 121, 107, 0.7))',
+  width: '100%',
+  color: '#ffffff',
+}));
+
+// HeroBox
+const HeroBox = styled(Box)(() => ({
+  position: 'relative',
+  minHeight: '100vh',
+  overflow: 'hidden',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+}));
+
+const FeatureCard = styled(Card)(() => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: 20,
+  boxShadow: '0 12px 48px rgba(0,0,0,0.08)',
+  transition: 'all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)',
+  background: 'rgba(255, 255, 255, 0.15)',
+  backdropFilter: 'blur(5px)',
+  '&:hover': {
+    transform: 'translateY(-15px) rotate(1deg)',
+    boxShadow: '0 20px 60px rgba(76, 175, 80, 0.25)',
+  },
+  animation: 'fadeInUp 1s ease-out forwards',
+  opacity: 0,
+  '@keyframes fadeInUp': {
+    '0%': { opacity: 0, transform: 'translateY(20px)' },
+    '100%': { opacity: 1, transform: 'translateY(0)' },
+  },
+}));
+
+const AnimatedButton = styled(Button)(() => ({
+  borderRadius: '40px',
+  padding: '14px 36px',
+  fontSize: '1.1rem',
+  fontWeight: 'bold',
+  background: secondaryColor,
+  margin: '0 10px',
+  '&:hover': {
+    background: secondaryColor,
+    transform: 'scale(1.05)',
+    boxShadow: '0 12px 32px rgba(26, 32, 27, 0.5)',
+  },
+  transition: 'all 0.4s ease',
+}));
+
+const Navbar = styled(AppBar)(({ theme }: { theme: Theme }) => ({
+  background: '#004B49', 
+  backdropFilter: 'blur(10px)',
+  boxShadow: 'none',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  color: '#ffffff',
+}));
+
+// Animated text
+const AnimatedTypography = styled(Typography)(() => ({
+  opacity: 0,
+  transform: 'translateY(20px)',
+  animation: 'fadeSlideUp 1s ease forwards',
+  '@keyframes fadeSlideUp': {
+    '0%': { opacity: 0, transform: 'translateY(20px)' },
+    '100%': { opacity: 1, transform: 'translateY(0)' },
+  },
+}));
 
 const LandingPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
-  const [wastedWater, setWastedWater] = useState(0);
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  // Animate the wasted water counter
+  const [wastedWater, setWastedWater] = useState(400); // Initial value set to 400 billion
+
   useEffect(() => {
-    const target = 400; // 400 billion liters
-    const duration = 3000; // 3 seconds
-    const increment = target / (duration / 30);
-    let current = 0;
-    
+    // Increment the counter every 100 milliseconds
     const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        current = target;
-        clearInterval(timer);
-      }
-      setWastedWater(Math.floor(current));
-    }, 30);
+      setWastedWater(prevWastedWater => prevWastedWater + 1);
+    }, 100);
 
+    // Clean up the interval when the component unmounts
     return () => clearInterval(timer);
   }, []);
 
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    handleClose();
+  };
+
   const features = [
     {
-      icon: <LocationOnIcon sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+      icon: <LocationOnIcon sx={{ fontSize: 70, color: '#ffffff' }} />,
       title: t('landing.features.items.0.title'),
       description: t('landing.features.items.0.description')
     },
     {
-      icon: <CalculateIcon sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+      icon: <CalculateIcon sx={{ fontSize: 70, color: '#ffffff' }} />,
       title: t('landing.features.items.1.title'),
       description: t('landing.features.items.1.description')
     },
     {
-      icon: <NatureIcon sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+      icon: <NatureIcon sx={{ fontSize: 70, color: '#ffffff' }} />,
       title: t('landing.features.items.2.title'),
       description: t('landing.features.items.2.description')
     }
   ];
 
+  const navItems = [
+    { label: 'Home', path: '/' },
+    { label: 'About', path: '/about' },
+    { label: 'Tracker', path: '/tracker' },
+    { label: 'Start Assessment', path: '/assessment' }
+  ];
+
   return (
-    <Box>
-      {/* Hero Section */}
-      <Box 
-        sx={{
-          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-          color: 'white',
-          py: 10,
-          position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '100px',
-            background: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 1200 120\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512,54.57,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z\' fill=\'%23f5f5f5\' fill-opacity=\'0.1\'/%3E%3Cpath d=\'M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,141.56,74.5V0Z\' fill=\'%23f5f5f5\' fill-opacity=\'0.1\'/%3E%3C/svg%3E")',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            transform: 'scaleX(-1)'
-          }
-        }}
-      >
+    <PageWrapper>
+      {/* Navbar */}
+      <Navbar position="static" color="transparent">
         <Container maxWidth="lg">
-          <Box textAlign="center" maxWidth={800} mx="auto" position="relative" zIndex={1} pt={4}>
-            <WaterDropIcon sx={{ fontSize: 80, mb: 2, filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))' }} />
-            <Typography variant="h2" component="h1" gutterBottom fontWeight="bold">
-              {t('landing.heroTitle')}
-            </Typography>
-            <Typography variant="h5" paragraph>
-              {t('landing.heroSubtitle')}
-            </Typography>
-            <Typography variant="h6" mb={4}>
-              {t('landing.wastedWater', { amount: wastedWater.toLocaleString() })}
-            </Typography>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="large"
-              onClick={() => navigate('/assessment')}
-              startIcon={<WaterDropIcon />}
-              sx={{
-                borderRadius: '50px',
-                padding: '12px 36px',
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 6px 25px rgba(0,0,0,0.25)',
-                },
-                transition: 'all 0.3s ease',
-              }}
-            >
-              {t('landing.startButton')}
-            </Button>
-          </Box>
-        </Container>
-      </Box>
-
-      {/* Features Section */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Typography variant="h3" component="h2" textAlign="center" mb={6}>
-          {t('landing.features.title')}
-        </Typography>
-        
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-            gap: 4,
-            justifyContent: 'center',
-          }}
-        >
-          {features.map((feature, index) => (
-            <Card 
-              key={index}
+          <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography 
+              variant="h6" 
+              component={RouterLink} 
+              to="/" 
+              color="inherit" 
               sx={{ 
-                width: '100%',
+                textDecoration: 'none', 
+                fontWeight: 'bold', 
+                fontSize: { xs: '1rem', md: '1.25rem' },
                 display: 'flex',
-                flexDirection: 'column',
-                borderRadius: 2,
-                boxShadow: 3,
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                alignItems: 'center',
                 '&:hover': {
-                  transform: 'translateY(-8px)',
-                  boxShadow: 6,
-                },
+                    color: '#000000', 
+                }
               }}
             >
-              <CardContent sx={{ flexGrow: 1, textAlign: 'center', p: 4 }}>
-                <Box mb={2}>
-                  {feature.icon}
-                </Box>
-                <Typography variant="h5" component="h3" gutterBottom fontWeight="bold">
-                  {feature.title}
-                </Typography>
-                <Typography color="text.secondary">
-                  {feature.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-      </Container>
+              <WaterDropIcon sx={{ fontSize: 40, mr: 1 }} />
+              Rooftop Rainwater Harvesting
+            </Typography>
+            {isMobile ? (
+              <>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={handleMenu}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  {navItems.map((item) => (
+                    <MenuItem key={item.label} onClick={() => handleNavigate(item.path)}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
+            ) : (
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {navItems.map((item) => (
+                  <Button 
+                    key={item.label} 
+                    component={RouterLink} 
+                    to={item.path} 
+                    color="inherit" 
+                    sx={{ 
+                      mr: 1,
+                      '&:hover': {
+                        backgroundColor: 'transparent',
+                        color: '#000000',
+                        '@media (hover: hover)': {
+                          backgroundColor: 'transparent',
+                        },
+                      }
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </Box>
+            )}
+          </Toolbar>
+        </Container>
+      </Navbar>
 
-      {/* Water Droplet Animation Background */}
-      <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, opacity: 0.1, pointerEvents: 'none' }}>
-        {[...Array(20)].map((_, i) => (
-          <Box
-            key={i}
-            sx={{
-              position: 'absolute',
-              width: 10,
-              height: 10,
-              borderRadius: '50%',
-              background: theme.palette.primary.main,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animation: 'ripple 4s infinite',
-              animationDelay: `${Math.random() * 4}s`,
-              '@keyframes ripple': {
-                '0%': {
-                  transform: 'scale(0.5)',
-                  opacity: 0.8,
-                },
-                '100%': {
-                  transform: 'scale(10)',
-                  opacity: 0,
-                },
-              },
-            }}
-          />
-        ))}
-      </Box>
-    </Box>
+      {/* Overlay container (Hero + Features) */}
+      <OverlayWrapper>
+        {/* Hero Section */}
+        <HeroBox>
+          <Container maxWidth="lg">
+            <Box maxWidth={1000} mx="auto">
+              <WaterDropIcon 
+                sx={{ 
+                  fontSize: 120, 
+                  mb: 4, 
+                  filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.4))', 
+                  animation: 'float 4s ease-in-out infinite' 
+                }} 
+              />
+
+              <AnimatedTypography
+                variant="h1"
+                gutterBottom
+                fontWeight="bold"
+                sx={{ 
+                  fontSize: { xs: '2.5rem', md: '4.5rem' }, 
+                  letterSpacing: '-2px', 
+                  textShadow: '0 4px 8px rgba(0,0,0,0.3)', 
+                  animationDelay: '0.2s' 
+                }}
+              >
+                {t('landing.heroTitle')}
+              </AnimatedTypography>
+
+              <AnimatedTypography
+                variant="h4"
+                paragraph
+                sx={{ 
+                  fontSize: { xs: '1.2rem', md: '1.8rem' }, 
+                  opacity: 0.95, 
+                  mb: 6, 
+                  textShadow: '0 2px 4px rgba(0,0,0,0.2)', 
+                  animationDelay: '0.4s' 
+                }}
+              >
+                {t('landing.heroSubtitle')}
+              </AnimatedTypography>
+
+              {/* Live counter for wasted water */}
+              <Typography
+                variant="h6"
+                sx={{ fontSize: { xs: '1rem', md: '1.3rem' }, mb: 6, fontWeight: 600 }}
+              >
+                India wastes <span style={{ fontWeight: 'bold' }}>{wastedWater.toLocaleString()}</span> billion liters of rainwater each year — let's change that!
+              </Typography>
+
+              <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <AnimatedButton
+                  variant="contained"
+                  onClick={() => navigate('/assessment')}
+                  startIcon={<NatureIcon />}
+                >
+                  Try Our Simulator
+                </AnimatedButton>
+              </Box>
+            </Box>
+          </Container>
+        </HeroBox>
+
+        {/* Features Section (no background break) */}
+        <Box sx={{ py: { xs: 8, md: 12 } }}>
+          <Container maxWidth="lg">
+            <AnimatedTypography
+              variant="h3"
+              textAlign="center"
+              mb={8}
+              sx={{ 
+                fontSize: { xs: '2rem', md: '3rem' }, 
+                fontWeight: 800, 
+                color: '#ffffff', 
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)', 
+                animationDelay: '0.6s' 
+              }}
+            >
+              {t('landing.features.title')}
+            </AnimatedTypography>
+            
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(3, 1fr)' },
+                gap: { xs: 4, md: 6 },
+                justifyContent: 'center',
+              }}
+            >
+              {features.map((feature, index) => (
+                <FeatureCard key={index} sx={{ animationDelay: `${index * 0.3 + 0.8}s` }}>
+                  <CardContent sx={{ textAlign: 'center', p: { xs: 4, md: 5 }, color: '#ffffff' }}>
+                    <Box mb={4}>{feature.icon}</Box>
+                    <AnimatedTypography
+                      variant="h4"
+                      gutterBottom
+                      fontWeight="bold"
+                      sx={{ fontSize: { xs: '1.4rem', md: '1.8rem' } }}
+                    >
+                      {feature.title}
+                    </AnimatedTypography>
+                    <AnimatedTypography
+                      sx={{ fontSize: { xs: '1rem', md: '1.1rem' }, color: accentColor }}
+                    >
+                      {feature.description}
+                    </AnimatedTypography>
+                  </CardContent>
+                </FeatureCard>
+              ))}
+            </Box>
+          </Container>
+        </Box>
+      </OverlayWrapper>
+    </PageWrapper>
   );
 };
 
