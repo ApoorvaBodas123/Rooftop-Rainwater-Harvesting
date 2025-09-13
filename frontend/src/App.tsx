@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import LandingPage from './pages/LandingPage';
 import AssessmentPage from './pages/AssessmentPage';
 import ResultsPage from './pages/ResultsPage';
-import Header from './components/Header';
 import AboutPage from './pages/AboutPage';
 import CommunityImpactDashboard from './pages/CommunityImpactDashboard';
 import SustainabilityTracker from './pages/SustainabilityTracker';
@@ -74,7 +73,6 @@ function App() {
           <CssBaseline />
           <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Router>
-              <Header />
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/assessment" element={<AssessmentPage />} />
