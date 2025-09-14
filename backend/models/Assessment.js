@@ -50,7 +50,48 @@ const assessmentSchema = new mongoose.Schema({
   paybackPeriod: Number,
   environmentalImpact: {
     waterSaved: Number,
-    co2Reduction: Number
+    co2Reduction: Number,
+    energySaved: Number,
+    groundwaterRecharge: Number,
+    equivalentTrees: Number
+  },
+  // Additional fields for real data
+  climateZone: String,
+  soilType: String,
+  systemDetails: {
+    tankCapacity: Number,
+    description: String,
+    demandCoverage: Number,
+    recommended: Boolean
+  },
+  costBreakdown: {
+    equipment: Number,
+    installation: Number,
+    total: Number,
+    subsidy: Number,
+    netCost: Number,
+    annualSavings: Number,
+    paybackYears: Number,
+    roi: Number
+  },
+  rechargeAnalysis: {
+    soilSuitability: String,
+    structures: [{
+      type: String,
+      quantity: Number,
+      dimensions: String,
+      cost: Number,
+      description: String
+    }],
+    totalCost: Number,
+    rechargeCapacity: Number,
+    recommendation: String
+  },
+  dataConfidence: {
+    type: Number,
+    min: 0,
+    max: 1,
+    default: 0.8
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

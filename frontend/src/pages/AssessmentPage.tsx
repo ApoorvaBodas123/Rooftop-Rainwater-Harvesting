@@ -122,23 +122,16 @@ const AssessmentPage = () => {
       setIsSubmitting(true);
       setError(null);
       
-      // Simulate API call
-      const response = await fetch('/api/assessments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit assessment');
-      }
-
-      const result = await response.json();
+      // For now, skip API call and go directly to results with form data
+      // This allows the assessment to work without backend running
+      console.log('Form data submitted:', data);
+      
+      // Simulate successful submission
       toast.success('Assessment submitted successfully!');
-      navigate('/results', { state: { assessment: result } });
+      
+      // Navigate to results with form data
+      navigate('/results', { state: { formData: data } });
+      
     } catch (err: any) {
       const errorMessage = err.message || 'An error occurred while submitting the form';
       setError(errorMessage);
@@ -316,25 +309,54 @@ const AssessmentPage = () => {
                 {t('assessment.location')}
               </Typography>
               <Box mb={3}>
-                {isLoaded && (
-                  <Autocomplete
-                    onLoad={(autocomplete) => setAutocomplete(autocomplete)}
-                    onPlaceChanged={onPlaceChanged}
-                  >
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      placeholder={t('assessment.locationPlaceholder')}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <LocationOnIcon color="action" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Autocomplete>
-                )}
+                <Controller
+                  name="location.address"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      {isLoaded && (
+                        <Autocomplete
+                          onLoad={(autocomplete) => setAutocomplete(autocomplete)}
+                          onPlaceChanged={onPlaceChanged}
+                        >
+                          <TextField
+                            {...field}
+                            fullWidth
+                            variant="outlined"
+                            placeholder={t('assessment.locationPlaceholder')}
+                            error={!!errors.location?.address}
+                            helperText={errors.location?.address?.message}
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <LocationOnIcon color="action" />
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        </Autocomplete>
+                      )}
+                      {!isLoaded && (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          variant="outlined"
+                          label="Location Address"
+                          placeholder="Enter your address manually"
+                          error={!!errors.location?.address}
+                          helperText={errors.location?.address?.message}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <LocationOnIcon color="action" />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+                />
                 <Button
                   startIcon={<MyLocationIcon />}
                   onClick={getUserLocation}
@@ -402,6 +424,28 @@ const AssessmentPage = () => {
                       type="number"
                       error={!!errors.averageRainfall}
                       helperText={errors.averageRainfall?.message}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <WaterDropIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
+                <Controller
+                  name="waterDemand"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="Daily Water Demand (liters)"
+                      variant="outlined"
+                      type="number"
+                      error={!!errors.waterDemand}
+                      helperText={errors.waterDemand?.message}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">

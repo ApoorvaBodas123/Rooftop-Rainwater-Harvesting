@@ -21,9 +21,6 @@ router.post(
       .isFloat({ min: 1 }),
     check('roofType', 'Please select a valid roof type')
       .isIn(['concrete', 'metal', 'tiled', 'other']),
-    check('averageRainfall', 'Please provide average annual rainfall in mm')
-      .isNumeric()
-      .isFloat({ min: 1 }),
     check('waterDemand', 'Please provide daily water demand in liters')
       .isNumeric()
       .isFloat({ min: 1 })
