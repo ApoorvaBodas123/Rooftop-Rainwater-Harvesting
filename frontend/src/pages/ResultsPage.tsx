@@ -71,8 +71,15 @@ interface ChartData {
 }
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip as ChartTooltip, Legend } from 'chart.js';
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF, type jsPDFOptions } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+// Extend jsPDF with autotable
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 
@@ -274,7 +281,7 @@ const ResultsPage = () => {
     // Monthly harvest table
     const monthLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const rows = monthLabels.map((m, i) => [m, (resultData.monthlyHarvest[i] || 0).toLocaleString() + ' L']);
-    (doc as any).autoTable({
+    autoTable(doc, {
       head: [['Month', 'Harvest (L)']],
       body: rows,
       startY: currentY,
