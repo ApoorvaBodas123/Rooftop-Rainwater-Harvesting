@@ -17,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // Define Routes
 app.use('/api/assessments', require('./routes/assessments'));
 app.use('/api/chat', require('./routes/chat'));
+app.use('/api/sustainability', require('./routes/sustainability'));
 
 // Health route
 app.get('/api/health', (req, res) => {
