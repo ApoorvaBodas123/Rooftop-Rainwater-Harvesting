@@ -1,4 +1,5 @@
 const Assessment = require('../models/Assessment');
+const calculationService = require('../services/calculationService');
 
 // @desc    Create a new assessment
 // @route   POST /api/assessments
@@ -9,67 +10,43 @@ exports.createAssessment = async (req, res) => {
       location,
       roofArea,
       roofType,
-      averageRainfall,
       waterDemand,
       user
     } = req.body;
 
-    // Calculate potential harvest (simplified calculation)
-    const runoffCoefficient = {
-      concrete: 0.9,
-      metal: 0.8,
-      tiled: 0.7,
-      other: 0.6
-    };
-
-    const annualHarvest = roofArea * averageRainfall * runoffCoefficient[roofType];
-    
-    // Calculate monthly distribution (simplified for demonstration)
-    const monthlyHarvest = Array(12).fill(0).map((_, i) => {
-      // This is a simplified model - in a real app, use actual monthly rainfall data
-      const monthlyFactor = [0.05, 0.03, 0.02, 0.01, 0.005, 0.01, 0.1, 0.2, 0.15, 0.1, 0.05, 0.05];
-      return Math.round(annualHarvest * monthlyFactor[i]);
-    });
-
-    // Determine recommended system size
-    let recommendedSystem = 'small';
-    let estimatedCost = 50000; // Base cost in INR
-    
-    if (annualHarvest > 100000) { // More than 100,000 liters
-      recommendedSystem = 'large';
-      estimatedCost = 150000;
-    } else if (annualHarvest > 50000) { // 50,000 - 100,000 liters
-      recommendedSystem = 'medium';
-      estimatedCost = 100000;
-    }
-
-    // Calculate payback period (simplified)
-    const waterCostPerLiter = 0.01; // Average cost of water per liter in INR
-    const annualSavings = waterDemand * 365 * waterCostPerLiter;
-    const paybackPeriod = Math.ceil(estimatedCost / annualSavings);
-
-    // Calculate environmental impact
-    const waterSaved = annualHarvest;
-    const co2Reduction = annualHarvest * 0.3; // 0.3 kg CO2 per liter of water saved (approximate)
-
-    const assessment = new Assessment({
+    // Use real calculation service instead of dummy data
+    const calculationResults = await calculationService.calculateHarvestingPotential({
       location,
       roofArea,
       roofType,
-      averageRainfall,
+      waterDemand
+    });
+
+    const assessment = new Assessment({
+      location: calculationResults.location,
+      roofArea,
+      roofType,
+      averageRainfall: calculationResults.rainfall.annual,
       waterDemand,
       potentialHarvest: {
-        annual: Math.round(annualHarvest),
-        monthly: monthlyHarvest,
-        daily: Math.round(annualHarvest / 365)
+        annual: calculationResults.harvest.annual,
+        monthly: calculationResults.harvest.monthly,
+        daily: calculationResults.harvest.daily
       },
-      recommendedSystem,
-      estimatedCost,
-      paybackPeriod,
+      recommendedSystem: calculationResults.system.size,
+      estimatedCost: calculationResults.costs.total,
+      paybackPeriod: calculationResults.costs.paybackYears,
       environmentalImpact: {
-        waterSaved: Math.round(waterSaved),
-        co2Reduction: Math.round(co2Reduction)
+        waterSaved: calculationResults.environmental.waterSaved,
+        co2Reduction: calculationResults.environmental.co2Reduction
       },
+      // Store additional real data
+      climateZone: calculationResults.location.climateZone,
+      soilType: calculationResults.location.soilType,
+      systemDetails: calculationResults.system,
+      costBreakdown: calculationResults.costs,
+      rechargeAnalysis: calculationResults.recharge,
+      dataConfidence: calculationResults.confidence,
       user
     });
 
@@ -77,13 +54,14 @@ exports.createAssessment = async (req, res) => {
     
     res.status(201).json({
       success: true,
-      data: assessment
+      data: assessment,
+      calculations: calculationResults
     });
   } catch (error) {
     console.error('Error creating assessment:', error);
     res.status(500).json({ 
       success: false, 
-      error: 'Server Error' 
+      error: error.message || 'Server Error' 
     });
   }
 };

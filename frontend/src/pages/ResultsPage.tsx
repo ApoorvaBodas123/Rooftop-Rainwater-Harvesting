@@ -181,6 +181,12 @@ const ResultsPage = () => {
     const averageRainfall = parseFloat(data.averageRainfall) || 0;
     const waterDemand = parseFloat(data.waterDemand) || 0;
     
+    // Convert roof area from sqft to square meters (1 sqft = 0.092903 sqm)
+    const roofAreaSqM = roofArea * 0.092903;
+    
+    // Convert rainfall from mm to meters (1000mm = 1m)
+    const rainfallM = averageRainfall / 1000;
+    
     // Runoff coefficients based on roof type
     const runoffCoefficients: { [key: string]: number } = {
       'concrete': 0.8,
@@ -191,7 +197,9 @@ const ResultsPage = () => {
     };
     
     const coefficient = runoffCoefficients[data.roofType] || 0.7;
-    const annualHarvest = roofArea * averageRainfall * coefficient;
+    
+    // Correct formula: Area(m²) × Rainfall(m) × Coefficient × 1000(to get liters)
+    const annualHarvest = roofAreaSqM * rainfallM * coefficient * 1000;
     
     // Generate monthly distribution (simple example - could be enhanced with real data)
     const monthlyHarvest = Array(12).fill(0).map((_, i) => {
