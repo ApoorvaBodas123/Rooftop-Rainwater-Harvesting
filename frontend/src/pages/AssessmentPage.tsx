@@ -21,6 +21,7 @@ import {
   useTheme
 } from '@mui/material';
 import { GoogleMap, Marker, Polygon, useJsApiLoader, Autocomplete } from '@react-google-maps/api';
+import RoofDetection from '../components/RoofDetection';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
@@ -366,6 +367,11 @@ const AssessmentPage = () => {
                   {t('assessment.useMyLocation')}
                 </Button>
               </Box>
+
+              {/* AI Roof Detection */}
+              <RoofDetection 
+                onAreaCalculated={(area) => setValue('roofArea', area.toString())}
+              />
 
               <Typography variant="h6" gutterBottom>
                 {t('assessment.roofDetails')}
