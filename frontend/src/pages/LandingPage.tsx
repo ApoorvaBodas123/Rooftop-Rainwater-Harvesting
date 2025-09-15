@@ -162,8 +162,8 @@ const LandingPage = () => {
   ];
 
   const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'About', path: '/about' },
+    { label: 'Community', path:'/community'},
+    { label: 'Help', path: '/about' },
     { label: 'Tracker', path: '/tracker' },
     { label: 'Start Assessment', path: '/assessment' }
   ];
