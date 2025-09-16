@@ -86,7 +86,7 @@ const CommunityImpactDashboard = () => {
           equivalents: { olympicPools: 0, households: 3, trees: 598, carbonOffset: 179 },
           achievements: [
             { id: 1, title: 'Water Warrior', description: 'Saved over 10,000 liters', earned: true, icon: '💧' },
-            { id: 2, title: 'Top 5 Saver', description: 'Ranked in top 5 neighbors', earned: true, icon: '🏆' },
+            { id: 2, title: 'Top 5 Saver', description: 'Ranked in top 5 neighbours', earned: true, icon: '🏆' },
             { id: 3, title: 'Consistency King', description: 'Saved water for 6 months straight', earned: true, icon: '👑' },
             { id: 4, title: 'Community Leader', description: 'Helped 3+ neighbors start harvesting', earned: false, icon: '🌟' },
             { id: 5, title: 'Monsoon Master', description: 'Maximized collection during monsoon', earned: true, icon: '🌧️' }
