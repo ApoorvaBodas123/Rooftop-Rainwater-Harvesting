@@ -18,19 +18,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/assessments', require('./routes/assessments'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/sustainability', require('./routes/sustainability'));
+app.use('/api/community', require('./routes/community'));
 
 // Health route
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Community impact stub
-app.get('/api/community/impact', (req, res) => {
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const litersPerMonth = [100,120,90,80,60,70,150,200,180,140,110,100].map(v => v * 1000);
-  const collectiveLiters = litersPerMonth.reduce((a,b)=>a+b,0);
-  const score = 72;
-  res.json({ months, litersPerMonth, collectiveLiters, score });
 });
 
 // Basic route
