@@ -2,7 +2,9 @@ const axios = require('axios');
 
 class LocationService {
   constructor() {
-    this.geocodingApiKey = process.env.OPENCAGE_API_KEY || process.env.GOOGLE_MAPS_API_KEY;
+    // Use OpenCage as primary, with fallback to offline mapping
+    this.geocodingApiKey = process.env.OPENCAGE_API_KEY;
+    this.nominatimBaseUrl = 'https://nominatim.openstreetmap.org';
   }
 
   /**
@@ -10,7 +12,7 @@ class LocationService {
    */
   async getLocationDetails(lat, lon) {
     try {
-      // Try OpenCage Geocoding API (free tier available)
+      // Try OpenCage Geocoding API first (if API key is available)
       if (this.geocodingApiKey) {
         const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json`, {
           params: {
@@ -34,11 +36,81 @@ class LocationService {
         }
       }
 
+      // Try Nominatim (OpenStreetMap) as free alternative
+      try {
+        const response = await axios.get(`${this.nominatimBaseUrl}/reverse`, {
+          params: {
+            lat: lat,
+            lon: lon,
+            format: 'json',
+            addressdetails: 1,
+            zoom: 18
+          },
+          headers: {
+            'User-Agent': 'RooftopRainwaterHarvesting/1.0'
+          }
+        });
+
+        if (response.data && response.data.address) {
+          const address = response.data.address;
+          return {
+            address: response.data.display_name,
+            city: address.city || address.town || address.village || address.hamlet,
+            state: address.state,
+            country: address.country,
+            district: address.state_district || address.county,
+            pincode: address.postcode,
+            confidence: 0.8 // Nominatim doesn't provide confidence
+          };
+        }
+      } catch (nominatimError) {
+        console.warn('Nominatim geocoding failed:', nominatimError.message);
+      }
+
       // Fallback to offline location mapping for Indian coordinates
       return this.getOfflineLocationDetails(lat, lon);
     } catch (error) {
       console.error('Error getting location details:', error);
       return this.getOfflineLocationDetails(lat, lon);
+    }
+  }
+
+  /**
+   * Search for locations by address/place name
+   */
+  async searchLocation(query, limit = 5) {
+    try {
+      // Try Nominatim (OpenStreetMap) first - it's free
+      const response = await axios.get(`${this.nominatimBaseUrl}/search`, {
+        params: {
+          q: query,
+          format: 'json',
+          limit: limit,
+          addressdetails: 1,
+          countrycodes: 'in', // Focus on India
+          dedupe: 1
+        },
+        headers: {
+          'User-Agent': 'RooftopRainwaterHarvesting/1.0'
+        }
+      });
+
+      if (response.data && Array.isArray(response.data)) {
+        return response.data.map(item => ({
+          lat: parseFloat(item.lat),
+          lng: parseFloat(item.lon),
+          address: item.display_name,
+          display_name: item.display_name,
+          place_id: item.place_id,
+          type: item.type,
+          importance: item.importance
+        }));
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error searching location:', error);
+      return [];
     }
   }
 

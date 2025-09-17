@@ -12,6 +12,7 @@ import ResultsPage from './pages/ResultsPage';
 import AboutPage from './pages/AboutPage';
 import CommunityImpactDashboard from './pages/CommunityImpactDashboard';
 import SustainabilityTracker from './pages/SustainabilityTracker';
+import MapDemoPage from './pages/MapDemoPage';
 
 // Theme
 const theme = createTheme({
@@ -80,6 +81,7 @@ function App() {
                 <Route path="/community" element={<CommunityImpactDashboard />} />
                 <Route path="/tracker" element={<SustainabilityTracker />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/map-demo" element={<MapDemoPage />} />
                 {/** Wildcard route removed intentionally */}
               </Routes>
             </Router>
