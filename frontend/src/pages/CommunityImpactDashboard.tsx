@@ -58,10 +58,14 @@ const CommunityImpactDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Get user info from localStorage or use default
+        const userId = localStorage.getItem('userId') || 'anonymous@example.com';
+        const neighborhoodId = localStorage.getItem('neighborhoodId') || 'default';
+        
         const [impactRes, leaderboardRes, shareRes] = await Promise.all([
-          fetch('/api/community/impact'),
-          fetch('/api/community/leaderboard'),
-          fetch('/api/community/share-message')
+          fetch(`/api/community/impact?userId=${encodeURIComponent(userId)}&neighborhoodId=${encodeURIComponent(neighborhoodId)}`),
+          fetch(`/api/community/leaderboard?userId=${encodeURIComponent(userId)}&neighborhoodId=${encodeURIComponent(neighborhoodId)}`),
+          fetch(`/api/community/share-message?userId=${encodeURIComponent(userId)}&neighborhoodId=${encodeURIComponent(neighborhoodId)}`)
         ]);
 
         const impactData = await impactRes.json();

@@ -11,42 +11,126 @@ exports.createAssessment = async (req, res) => {
       roofArea,
       roofType,
       waterDemand,
-      user
+      averageRainfall,
+      user,
+      userName,
+      userEmail
     } = req.body;
 
-    // Use real calculation service instead of dummy data
-    const calculationResults = await calculationService.calculateHarvestingPotential({
-      location,
-      roofArea,
-      roofType,
-      waterDemand
-    });
+    // Generate neighborhood ID based on location (simplified)
+    const neighborhoodId = location.address ? 
+      location.address.split(',').slice(-2).join(',').trim().toLowerCase().replace(/\s+/g, '-') : 
+      'default';
+
+    // Calculate sustainability score
+    const calculateSustainabilityScore = (roofArea, waterDemand, rainfall) => {
+      let score = 0;
+      const annualHarvest = roofArea * rainfall * 0.8; // 80% efficiency
+      const harvestEfficiency = annualHarvest / (roofArea * rainfall);
+      score += Math.min(harvestEfficiency * 40, 40);
+      const areaScore = Math.min(roofArea / 1000 * 20, 20);
+      score += areaScore;
+      const demandCoverage = annualHarvest / (waterDemand * 365);
+      score += Math.min(demandCoverage * 20, 20);
+      const environmentScore = Math.min(annualHarvest / 10000 * 20, 20);
+      score += environmentScore;
+      return Math.round(Math.min(score, 100));
+    };
+
+    // Generate monthly data
+    const generateMonthlyData = (annualHarvest, rainfall) => {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return months.map(month => ({
+        month,
+        waterSaved: Math.round(annualHarvest / 12 * (0.8 + Math.random() * 0.4)),
+        rainfall: Math.round(rainfall / 12 * (0.8 + Math.random() * 0.4)),
+        efficiency: Math.round(75 + Math.random() * 25)
+      }));
+    };
+
+    // Calculate basic harvest potential
+    const annualHarvest = roofArea * averageRainfall * 0.8; // 80% efficiency
+    const monthlyHarvest = Array(12).fill(0).map(() => annualHarvest / 12 * (0.8 + Math.random() * 0.4));
+    const sustainabilityScore = calculateSustainabilityScore(roofArea, waterDemand, averageRainfall);
+    const monthlyData = generateMonthlyData(annualHarvest, averageRainfall);
+
+    // Generate achievements
+    const achievements = [
+      {
+        id: 1,
+        title: 'Water Warrior',
+        description: 'Saved over 10,000 liters',
+        earned: annualHarvest >= 10000,
+        earnedDate: annualHarvest >= 10000 ? new Date() : null,
+        icon: '💧'
+      },
+      {
+        id: 2,
+        title: 'Top 5 Saver',
+        description: 'High sustainability score',
+        earned: sustainabilityScore >= 75,
+        earnedDate: sustainabilityScore >= 75 ? new Date() : null,
+        icon: '🏆'
+      },
+      {
+        id: 3,
+        title: 'Consistency King',
+        description: 'Consistent water saving',
+        earned: true,
+        earnedDate: new Date(),
+        icon: '👑'
+      },
+      {
+        id: 4,
+        title: 'Community Leader',
+        description: 'Leading by example with large system',
+        earned: roofArea >= 2000,
+        earnedDate: roofArea >= 2000 ? new Date() : null,
+        icon: '🌟'
+      },
+      {
+        id: 5,
+        title: 'Monsoon Master',
+        description: 'Maximized collection during monsoon',
+        earned: annualHarvest >= 15000,
+        earnedDate: annualHarvest >= 15000 ? new Date() : null,
+        icon: '🌧️'
+      }
+    ];
 
     const assessment = new Assessment({
-      location: calculationResults.location,
-      roofArea,
+      location: {
+        type: 'Point',
+        coordinates: location.coordinates,
+        address: location.address
+      },
+      roofArea: parseFloat(roofArea),
       roofType,
-      averageRainfall: calculationResults.rainfall.annual,
-      waterDemand,
+      averageRainfall: parseFloat(averageRainfall),
+      waterDemand: parseFloat(waterDemand),
       potentialHarvest: {
-        annual: calculationResults.harvest.annual,
-        monthly: calculationResults.harvest.monthly,
-        daily: calculationResults.harvest.daily
+        annual: Math.round(annualHarvest),
+        monthly: monthlyHarvest.map(m => Math.round(m)),
+        daily: Math.round(annualHarvest / 365)
       },
-      recommendedSystem: calculationResults.system.size,
-      estimatedCost: calculationResults.costs.total,
-      paybackPeriod: calculationResults.costs.paybackYears,
+      recommendedSystem: roofArea > 2000 ? 'large' : roofArea > 1000 ? 'medium' : 'small',
+      estimatedCost: Math.round(roofArea * 50 + 10000), // Rough estimate
+      paybackPeriod: Math.round(10 + Math.random() * 5),
       environmentalImpact: {
-        waterSaved: calculationResults.environmental.waterSaved,
-        co2Reduction: calculationResults.environmental.co2Reduction
+        waterSaved: Math.round(annualHarvest),
+        co2Reduction: Math.round(annualHarvest * 0.0003),
+        energySaved: Math.round(annualHarvest * 0.001),
+        groundwaterRecharge: Math.round(annualHarvest * 0.7),
+        equivalentTrees: Math.round(annualHarvest / 1000)
       },
-      // Store additional real data
-      climateZone: calculationResults.location.climateZone,
-      soilType: calculationResults.location.soilType,
-      systemDetails: calculationResults.system,
-      costBreakdown: calculationResults.costs,
-      rechargeAnalysis: calculationResults.recharge,
-      dataConfidence: calculationResults.confidence,
+      // Community dashboard fields
+      userName: userName || 'Anonymous User',
+      userEmail: userEmail || 'anonymous@example.com',
+      sustainabilityScore,
+      monthlyWaterSaved: monthlyData,
+      totalWaterSaved: Math.round(annualHarvest),
+      achievements,
+      neighborhoodId,
       user
     });
 
@@ -54,8 +138,7 @@ exports.createAssessment = async (req, res) => {
     
     res.status(201).json({
       success: true,
-      data: assessment,
-      calculations: calculationResults
+      data: assessment
     });
   } catch (error) {
     console.error('Error creating assessment:', error);

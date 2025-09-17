@@ -123,11 +123,45 @@ const AssessmentPage = () => {
       setIsSubmitting(true);
       setError(null);
       
-      // For now, skip API call and go directly to results with form data
-      // This allows the assessment to work without backend running
-      console.log('Form data submitted:', data);
+      // Generate user info for community dashboard
+      const userName = `User ${Math.floor(Math.random() * 1000)}`;
+      const userEmail = `user${Math.floor(Math.random() * 1000)}@example.com`;
       
-      // Simulate successful submission
+      // Store user info in localStorage for community dashboard
+      localStorage.setItem('userId', userEmail);
+      localStorage.setItem('userName', userName);
+      
+      // Generate neighborhood ID from location
+      const neighborhoodId = data.location.address ? 
+        data.location.address.split(',').slice(-2).join(',').trim().toLowerCase().replace(/\s+/g, '-') : 
+        'default';
+      localStorage.setItem('neighborhoodId', neighborhoodId);
+      
+      // Try to submit to backend for community dashboard data
+      try {
+        const response = await fetch('/api/assessments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...data,
+            userName,
+            userEmail
+          })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Assessment saved to backend:', result);
+        } else {
+          console.log('Backend not available, proceeding with frontend-only flow');
+        }
+      } catch (backendError) {
+        console.log('Backend not available, proceeding with frontend-only flow:', backendError);
+      }
+      
+      console.log('Form data submitted:', data);
       toast.success('Assessment submitted successfully!');
       
       // Navigate to results with form data
