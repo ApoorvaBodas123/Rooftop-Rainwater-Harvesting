@@ -133,36 +133,75 @@ const ResultsPage = () => {
   const [waterLevel, setWaterLevel] = useState(0);
   const [tankFillProgress, setTankFillProgress] = useState(0);
 
-  // Load data from location state (support both {formData} and {assessment})
+  // Load data from location state (support {formData} or backend {assessment, calculations})
   useEffect(() => {
     const incoming = (location as any).state;
+    const backendAssessment = incoming?.assessment;
+    const backendCalculations = incoming?.calculations;
+
+    if (backendAssessment && backendCalculations) {
+      // Prefer backend results when available
+      const backendResults = {
+        annualHarvest: backendCalculations?.harvest?.annual ?? 0,
+        monthlyHarvest: backendCalculations?.harvest?.monthly ?? Array(12).fill(0),
+        dailyHarvest: backendCalculations?.harvest?.daily ?? 0,
+        recommendedSystem: backendCalculations?.system?.size ?? 'Small',
+        estimatedCost: backendCalculations?.costs?.total ?? 0,
+        paybackPeriod: backendCalculations?.costs?.paybackYears ?? 0,
+        environmentalImpact: {
+          waterSaved: backendCalculations?.environmental?.waterSaved ?? 0,
+          co2Reduction: backendCalculations?.environmental?.co2Reduction ?? 0,
+        },
+        runoffCoefficient: backendCalculations?.harvest?.efficiency,
+        structure: backendCalculations?.recharge ? {
+          type: backendCalculations.recharge.structures?.[0]?.type ?? '—',
+          dimensions: { length: 0, breadth: 0, depth: 0, unit: 'm' }
+        } : undefined
+      } as ResultData as any;
+
+      setResultData(backendResults);
+      setFormData({
+        location: {
+          address: backendAssessment?.location?.address ?? '',
+          coordinates: backendAssessment?.location?.coordinates ?? [0, 0]
+        },
+        roofArea: String(backendAssessment?.roofArea ?? ''),
+        roofType: backendAssessment?.roofType ?? '',
+        averageRainfall: String(backendAssessment?.averageRainfall ?? ''),
+        waterDemand: String(backendAssessment?.waterDemand ?? '')
+      });
+
+      setChartData(prev => ({
+        ...prev,
+        datasets: [{ ...prev.datasets[0], data: backendResults.monthlyHarvest }]
+      }));
+
+      const maxHarvest = Math.max(...backendResults.monthlyHarvest);
+      const currentHarvest = backendResults.monthlyHarvest[new Date().getMonth()];
+      const level = maxHarvest > 0 ? Math.min(100, Math.round((currentHarvest / maxHarvest) * 100)) : 0;
+      setWaterLevel(level);
+      setTankFillProgress(level);
+      setLoading(false);
+      return;
+    }
+
     const incomingForm: FormData | undefined = incoming?.formData || incoming?.assessment?.formData || incoming?.assessment;
     if (incomingForm) {
       const formData = incomingForm;
       setFormData(formData);
-      
-      // Calculate results
       const results = calculateResults(formData);
       setResultData(results);
-      
-      // Update chart data with actual results
       setChartData(prev => ({
         ...prev,
-        datasets: [{
-          ...prev.datasets[0],
-          data: results.monthlyHarvest
-        }]
+        datasets: [{ ...prev.datasets[0], data: results.monthlyHarvest }]
       }));
-      
-      // Calculate water level for visualization (0-100%)
       const maxHarvest = Math.max(...results.monthlyHarvest);
-      const currentHarvest = results.monthlyHarvest[new Date().getMonth()]; // Current month's harvest
+      const currentHarvest = results.monthlyHarvest[new Date().getMonth()];
       const level = maxHarvest > 0 ? Math.min(100, Math.round((currentHarvest / maxHarvest) * 100)) : 0;
       setWaterLevel(level);
       setTankFillProgress(level);
       setLoading(false);
     } else {
-      // If no form data, redirect to home
       navigate('/');
     }
   }, [location, navigate]);

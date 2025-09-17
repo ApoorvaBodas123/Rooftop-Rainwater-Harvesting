@@ -42,6 +42,8 @@ class CalculationService {
    */
   async calculateHarvestingPotential(assessmentData) {
     const { location, roofArea, roofType, waterDemand } = assessmentData;
+    const safeRoofArea = Number(roofArea) || 0;
+    const safeWaterDemand = Number(waterDemand) || 0;
     const [lon, lat] = location.coordinates;
 
     // Get real rainfall data
@@ -50,7 +52,7 @@ class CalculationService {
 
     // Calculate monthly and annual harvest
     const harvestCalculations = this.calculateMonthlyHarvest(
-      roofArea, 
+      safeRoofArea, 
       roofType, 
       rainfallData.historical.monthlyRainfall
     );
@@ -58,26 +60,26 @@ class CalculationService {
     // Determine optimal system size
     const systemRecommendation = this.recommendSystem(
       harvestCalculations.annualHarvest,
-      waterDemand,
-      roofArea
+      safeWaterDemand,
+      safeRoofArea
     );
 
     // Calculate costs
     const costAnalysis = this.calculateCosts(
       systemRecommendation.size,
-      roofArea,
+      safeRoofArea,
       harvestCalculations.annualHarvest
     );
 
     // Environmental impact
     const environmentalImpact = this.calculateEnvironmentalImpact(
       harvestCalculations.annualHarvest,
-      waterDemand
+      safeWaterDemand
     );
 
     // Recharge potential
     const rechargeAnalysis = this.calculateRechargeStructures(
-      roofArea,
+      safeRoofArea,
       soilData,
       harvestCalculations.annualHarvest
     );
@@ -103,20 +105,22 @@ class CalculationService {
   }
 
   calculateMonthlyHarvest(roofArea, roofType, monthlyRainfall) {
+    const area = Number(roofArea) || 0;
     const runoffCoeff = this.runoffCoefficients[roofType] || 0.70;
+    const months = Array.isArray(monthlyRainfall) ? monthlyRainfall : Array(12).fill(0);
     
-    const monthlyHarvest = monthlyRainfall.map(rainfall => {
+    const monthlyHarvest = months.map(rainfall => {
       // Apply first flush diverter loss
-      const effectiveRainfall = Math.max(0, rainfall - this.firstFlushLoss);
+      const effectiveRainfall = Math.max(0, (Number(rainfall) || 0) - this.firstFlushLoss);
       
       // Calculate harvest: Area (m²) × Rainfall (mm) × Runoff coefficient × Storage efficiency
       // Convert mm to liters: 1mm over 1m² = 1 liter
-      const harvest = roofArea * effectiveRainfall * runoffCoeff * this.storageEfficiency;
+      const harvest = area * effectiveRainfall * runoffCoeff * this.storageEfficiency;
       
       return Math.round(harvest);
     });
 
-    const annualHarvest = monthlyHarvest.reduce((sum, month) => sum + month, 0);
+    const annualHarvest = monthlyHarvest.reduce((sum, month) => sum + (Number(month) || 0), 0);
     const dailyAverage = Math.round(annualHarvest / 365);
 
     // Peak harvest month for system sizing
@@ -132,7 +136,7 @@ class CalculationService {
   }
 
   recommendSystem(annualHarvest, dailyWaterDemand, roofArea) {
-    const annualDemand = dailyWaterDemand * 365;
+    const annualDemand = Math.max(0, Number(dailyWaterDemand) || 0) * 365;
     const demandCoverage = (annualHarvest / annualDemand) * 100;
 
     let systemSize = 'small';
@@ -156,7 +160,7 @@ class CalculationService {
       size: systemSize,
       tankCapacity,
       description,
-      demandCoverage: Math.round(demandCoverage),
+      demandCoverage: Math.round(Number.isFinite(demandCoverage) ? demandCoverage : 0),
       recommended: demandCoverage >= 30 // Recommend if covers at least 30% of demand
     };
   }
@@ -170,13 +174,17 @@ class CalculationService {
 
     // Calculate savings and payback
     const waterCostPerLiter = 0.015; // INR per liter (average)
-    const annualSavings = annualHarvest * waterCostPerLiter;
-    const paybackPeriod = totalCost / annualSavings;
+    const safeAnnualHarvest = (Number(annualHarvest) || 0);
+    const annualSavings = safeAnnualHarvest * waterCostPerLiter;
+    const paybackPeriod = annualSavings > 0 ? (totalCost / annualSavings) : Infinity;
 
     // Government subsidies (varies by state)
     const subsidyPercentage = 0.25; // 25% average subsidy
     const subsidyAmount = totalCost * subsidyPercentage;
     const netCost = totalCost - subsidyAmount;
+
+    const safePayback = Number.isFinite(paybackPeriod) ? Math.round(paybackPeriod * 10) / 10 : 0;
+    const roiRaw = netCost > 0 ? (annualSavings / netCost) * 100 : 0;
 
     return {
       equipment: Math.round(equipmentCost),
@@ -185,14 +193,14 @@ class CalculationService {
       subsidy: Math.round(subsidyAmount),
       netCost: Math.round(netCost),
       annualSavings: Math.round(annualSavings),
-      paybackYears: Math.round(paybackPeriod * 10) / 10,
-      roi: Math.round((annualSavings / netCost) * 100)
+      paybackYears: safePayback,
+      roi: Math.round(roiRaw)
     };
   }
 
   calculateEnvironmentalImpact(annualHarvest, dailyWaterDemand) {
     // Water conservation
-    const waterSaved = annualHarvest;
+    const waterSaved = Math.max(0, Number(annualHarvest) || 0);
     
     // CO2 reduction (water treatment and distribution)
     const co2PerLiter = 0.0003; // kg CO2 per liter
@@ -255,13 +263,13 @@ class CalculationService {
       }
     }
 
-    const totalRechargeCost = structures.reduce((sum, struct) => sum + struct.cost, 0);
+    const totalRechargeCost = structures.reduce((sum, struct) => sum + (Number(struct.cost) || 0), 0);
 
     return {
       soilSuitability: percolationRate > 0.5 ? 'Good' : 'Moderate',
       structures,
       totalCost: totalRechargeCost,
-      rechargeCapacity: Math.round(annualHarvest * percolationRate),
+      rechargeCapacity: Math.round(((Number(annualHarvest) || 0) * (Number(percolationRate) || 0))),
       recommendation: percolationRate > 0.6 ? 
         'Excellent for groundwater recharge' : 
         'Suitable with proper filtration'
