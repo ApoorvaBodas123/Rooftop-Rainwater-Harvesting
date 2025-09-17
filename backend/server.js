@@ -1,20 +1,27 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
+const config = require('./config/config');
 
 // Initialize Express app
 const app = express();
 
 // Connect to MongoDB
-connectDB();
+connectDB(config.mongoURI);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: config.frontendUrl,
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Define Routes
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/assessments', require('./routes/assessments'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/sustainability', require('./routes/sustainability'));
@@ -36,8 +43,13 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-const PORT = process.env.PORT || 5000;
+const server = app.listen(config.port, () => {
+  console.log(`Server running in ${config.nodeEnv} mode on port ${config.port}`);
+});
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err, promise) => {
+  console.log(`Error: ${err.message}`);
+  // Close server & exit process
+  server.close(() => process.exit(1));
 });

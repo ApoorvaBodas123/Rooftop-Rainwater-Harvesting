@@ -10,7 +10,9 @@
     "results": "Results",
     "language": "भाषा",
     "selectLanguage": "Select Language",
-    "back": "Back"
+    "back": "Back",
+    "login": "Login",
+    "signup": "Sign Up"
   },
   "landing": {
     "heroTitle": "Rooftop Rainwater Harvesting Assessment",
@@ -33,6 +35,37 @@
           "description": "Receive a detailed report with actionable insights."
         }
       ]
+    }
+  },
+  "auth": {
+    "email": "Email Address",
+    "name": "Full Name",
+    "password": "Password",
+    "loading": "Processing...",
+    "error": "Error",
+    "logout": "Logout",
+    "login": {
+      "title": "Sign In",
+      "button": "Sign In",
+      "noAccount": "Don't have an account? Sign Up",
+      "forgotPassword": "Forgot password?",
+      "success": "Successfully logged in!"
+    },
+    "signup": {
+      "title": "Create Account",
+      "button": "Sign Up",
+      "alreadyHaveAccount": "Already have an account? Sign In",
+      "confirmPassword": "Confirm Password",
+      "passwordsDontMatch": "Passwords don't match",
+      "success": "Account created successfully!"
+    },
+    "errors": {
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email address",
+      "passwordLength": "Password must be at least 6 characters long",
+      "invalidCredentials": "Invalid email or password",
+      "emailInUse": "This email is already in use",
+      "networkError": "Network error. Please try again later"
     }
   },
   "assessment": {
