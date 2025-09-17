@@ -337,8 +337,5 @@ const getRandomAvatar = () => {
   return avatars[Math.floor(Math.random() * avatars.length)];
 };
 
-module.exports = {
-  getCommunityImpact,
-  getLeaderboard,
-  getShareMessage
-};
+// Functions are already exported above using exports.functionName
+// No need for additional module.exports
