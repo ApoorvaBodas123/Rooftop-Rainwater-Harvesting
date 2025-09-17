@@ -77,7 +77,8 @@ const assessmentSchema = new mongoose.Schema({
   rechargeAnalysis: {
     soilSuitability: String,
     structures: [{
-      type: String,
+      // Use nested object to allow a property literally named 'type'
+      type: { type: String },
       quantity: Number,
       dimensions: String,
       cost: Number,

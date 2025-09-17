@@ -23,8 +23,19 @@ exports.createAssessment = async (req, res) => {
       waterDemand
     });
 
+    // Build GeoJSON location with required type 'Point'
+    const [lon, lat] = calculationResults.location.coordinates || location.coordinates || [];
+    const geoLocation = {
+      type: 'Point',
+      coordinates: [lon, lat],
+      address: location?.address || undefined,
+      city: location?.city || undefined,
+      state: location?.state || undefined,
+      country: location?.country || undefined
+    };
+
     const assessment = new Assessment({
-      location: calculationResults.location,
+      location: geoLocation,
       roofArea,
       roofType,
       averageRainfall: calculationResults.rainfall.annual,
@@ -60,6 +71,16 @@ exports.createAssessment = async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating assessment:', error);
+    // Handle Mongoose validation errors more clearly
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        error: 'Validation Error',
+        details: Object.fromEntries(
+          Object.entries(error.errors || {}).map(([k, v]) => [k, v.message])
+        )
+      });
+    }
     res.status(500).json({ 
       success: false, 
       error: error.message || 'Server Error' 
