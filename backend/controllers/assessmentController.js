@@ -1,5 +1,6 @@
 const Assessment = require('../models/Assessment');
 const calculationService = require('../services/calculationService');
+const mongoose = require('mongoose');
 
 // @desc    Create a new assessment
 // @route   POST /api/assessments
