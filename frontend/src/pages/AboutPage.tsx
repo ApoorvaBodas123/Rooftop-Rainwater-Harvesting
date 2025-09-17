@@ -4,7 +4,6 @@ import {
   Box, 
   Paper, 
   Button, 
-  Grid, 
   Card, 
   Fab, 
   Dialog, 
@@ -122,15 +121,15 @@ const AboutPage = () => {
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
           Rooftop Rainwater Harvesting Assessment
         </Typography>
-        <Typography variant="h8" sx={{ color: 'text.secondary', mb: 3 }}>
+        <Typography variant="h6" sx={{ color: 'text.secondary', mb: 3 }}>
           Estimate rooftop rainwater harvesting potential, get recharge structure suggestions, and track your water-saving impact.
         </Typography>
       </Paper>
 
       {/* Why It Matters & 3-Step Process Side by Side */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3, mb: 4 }}>
         {/* Why It Matters - Left Side */}
-        <Grid xs={12} md={6}>
+        <Box>
           <Paper sx={{ p: 3, height: '100%', backgroundColor: '#e0f7fa' }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
               Why It Matters
@@ -156,10 +155,10 @@ const AboutPage = () => {
               </Card>
             </Box>
           </Paper>
-        </Grid>
+        </Box>
 
         {/* Simple 3-Step Process - Right Side */}
-        <Grid xs={12} md={6}>
+        <Box>
           <Paper sx={{ p: 3, height: '100%', backgroundColor: '#e0f7fa' }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
               Simple 3-Step Process
@@ -194,8 +193,8 @@ const AboutPage = () => {
               </Box>
             </Box>
           </Paper>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
 
       {/* Start Assessment Button */}
       <Box sx={{ textAlign: 'center', mb: 4 }}>
