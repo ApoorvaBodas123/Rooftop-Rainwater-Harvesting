@@ -1,9 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline, Box } from '@mui/material';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -12,46 +14,73 @@ import ResultsPage from './pages/ResultsPage';
 import AboutPage from './pages/AboutPage';
 import CommunityImpactDashboard from './pages/CommunityImpactDashboard';
 import SustainabilityTracker from './pages/SustainabilityTracker';
+<<<<<<< HEAD
 
+=======
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+>>>>>>> d238aaabaf1545c94ddecbec855cca69ee325f5e
+>>>>>>> dfe779fab31e5eb7fc87f17ccd61adba4d283026
 
 // Theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#1a73e8',
+      light: '#63a4ff',
+      dark: '#0045b5',
+      contrastText: '#fff',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#0d47a1',
+      light: '#5472d3',
+      dark: '#002171',
+      contrastText: '#fff',
     },
     background: {
+<<<<<<< HEAD
       default: '#e3f2fd',
+=======
+      default: '#f5f9ff',
+      paper: '#ffffff',
+    },
+    text: {
+      primary: '#1a237e',
+      secondary: '#5c6bc0',
+>>>>>>> dfe779fab31e5eb7fc87f17ccd61adba4d283026
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     h1: {
-      fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
       fontWeight: 700,
+      color: '#1a237e',
+      fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
     h2: {
+      fontWeight: 600,
+      color: '#1a237e',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
-      fontWeight: 700,
     },
     h3: {
+      fontWeight: 600,
+      color: '#1a237e',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
-      fontWeight: 700,
     },
     h4: {
+      fontWeight: 600,
+      color: '#1a237e',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
-      fontWeight: 700,
     },
     h5: {
-      fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
       fontWeight: 500,
+      color: '#1a237e',
+      fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
     h6: {
-      fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
       fontWeight: 500,
+      color: '#1a237e',
+      fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
   },
   components: {
@@ -71,20 +100,40 @@ function App() {
   return (
     <I18nextProvider i18n={i18n}>
       <ThemeProvider theme={theme}>
+        <AuthProvider>
           <CssBaseline />
           <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Router>
               <Routes>
                 <Route path="/" element={<LandingPage />} />
-                <Route path="/assessment" element={<AssessmentPage />} />
-                <Route path="/results" element={<ResultsPage />} />
-                <Route path="/community" element={<CommunityImpactDashboard />} />
-                <Route path="/tracker" element={<SustainabilityTracker />} />
+                
+                {/* Public routes */}
                 <Route path="/about" element={<AboutPage />} />
+<<<<<<< HEAD
+=======
+
+                
+                {/** Wildcard route removed intentionally */}
+
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                
+                {/* Protected routes */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/assessment" element={<AssessmentPage />} />
+                  <Route path="/results" element={<ResultsPage />} />
+                  <Route path="/community" element={<CommunityImpactDashboard />} />
+                  <Route path="/tracker" element={<SustainabilityTracker />} />
+                </Route>
+                
+                {/* Fallback route */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+>>>>>>> dfe779fab31e5eb7fc87f17ccd61adba4d283026
               </Routes>
             </Router>
           </Box>
           <ToastContainer />
+        </AuthProvider>
       </ThemeProvider>
     </I18nextProvider>
   );

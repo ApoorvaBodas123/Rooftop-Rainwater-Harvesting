@@ -17,12 +17,17 @@
     "@mui/material": "^7.3.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
+<<<<<<< HEAD
     "@types/leaflet": "^1.9.20",
+=======
+    "@types/leaflet": "^1.9.12",
+>>>>>>> dfe779fab31e5eb7fc87f17ccd61adba4d283026
     "@types/node": "^24.3.1",
     "@types/react-chartjs-2": "^2.0.2",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-toastify": "^4.0.2",
     "autoprefixer": "^10.4.16",
+    "axios": "^1.12.2",
     "chart.js": "^4.5.0",
     "framer-motion": "^12.23.12",
     "i18next": "^25.5.2",

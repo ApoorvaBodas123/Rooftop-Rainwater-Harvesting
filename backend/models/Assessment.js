@@ -77,7 +77,8 @@ const assessmentSchema = new mongoose.Schema({
   rechargeAnalysis: {
     soilSuitability: String,
     structures: [{
-      type: String,
+      // Use nested object to allow a property literally named 'type'
+      type: { type: String },
       quantity: Number,
       dimensions: String,
       cost: Number,
@@ -97,7 +98,48 @@ const assessmentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  // Community dashboard fields
+  userName: {
+    type: String,
+    required: true
+  },
+  userEmail: {
+    type: String,
+    required: true
+  },
+  sustainabilityScore: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 100
+  },
+  monthlyWaterSaved: [{
+    month: String,
+    waterSaved: Number,
+    rainfall: Number,
+    efficiency: Number
+  }],
+  totalWaterSaved: {
+    type: Number,
+    default: 0
+  },
+  achievements: [{
+    id: Number,
+    title: String,
+    description: String,
+    earned: Boolean,
+    earnedDate: Date,
+    icon: String
+  }],
+  neighborhoodId: {
+    type: String,
+    required: true
+  },
   createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
     type: Date,
     default: Date.now
   }

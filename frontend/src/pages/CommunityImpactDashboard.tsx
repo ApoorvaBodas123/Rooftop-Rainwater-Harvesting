@@ -58,57 +58,83 @@ const CommunityImpactDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Get user info from localStorage or use default
+        const userId = localStorage.getItem('userId') || 'anonymous@example.com';
+        const neighborhoodId = localStorage.getItem('neighborhoodId') || 'chennai';
+        
+        // API base URL (same as assessment page)
+        const API_BASE = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:5000';
+        
+        console.log('Fetching community data for:', { userId, neighborhoodId });
+        console.log('API_BASE:', API_BASE);
+
+        // Test backend connection first
+        try {
+          const healthCheck = await fetch(`${API_BASE}/api/health`);
+          console.log('Backend health check:', healthCheck.ok ? 'OK' : 'FAILED');
+        } catch (healthError) {
+          console.error('Backend not reachable:', healthError);
+          throw new Error('Backend server not running');
+        }
+
         const [impactRes, leaderboardRes, shareRes] = await Promise.all([
-          fetch('/api/community/impact'),
-          fetch('/api/community/leaderboard'),
-          fetch('/api/community/share-message')
+          fetch(`${API_BASE}/api/community/impact?userId=${encodeURIComponent(userId)}&neighborhoodId=${encodeURIComponent(neighborhoodId)}`),
+          fetch(`${API_BASE}/api/community/leaderboard?userId=${encodeURIComponent(userId)}&neighborhoodId=${encodeURIComponent(neighborhoodId)}`),
+          fetch(`${API_BASE}/api/community/share-message?userId=${encodeURIComponent(userId)}&neighborhoodId=${encodeURIComponent(neighborhoodId)}`)
         ]);
+
+        console.log('API Response Status:', {
+          impact: impactRes.status,
+          leaderboard: leaderboardRes.status,
+          share: shareRes.status
+        });
+
+        if (!impactRes.ok || !leaderboardRes.ok || !shareRes.ok) {
+          console.error('API call failed:', {
+            impactError: !impactRes.ok ? await impactRes.text() : null,
+            leaderboardError: !leaderboardRes.ok ? await leaderboardRes.text() : null,
+            shareError: !shareRes.ok ? await shareRes.text() : null
+          });
+          throw new Error('Failed to fetch community data');
+        }
 
         const impactData = await impactRes.json();
         const leaderboardData = await leaderboardRes.json();
         const shareData = await shareRes.json();
 
+        console.log('Successfully fetched community data:', { impactData, leaderboardData, shareData });
+
         setImpact(impactData);
         setLeaderboard(leaderboardData);
         setShareMessages(shareData);
-      } catch {
-        // Mock data fallback
+      } catch (error) {
+        console.error('Error fetching community data:', error);
+        
+        // Show empty state when API is not available - no mock data fallback
         setImpact({
           months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-          communityData: [45000,52000,48000,38000,25000,65000,78000,72000,58000,42000,35000,40000],
-          individualData: [1200,1400,1300,1000,650,1800,2100,1950,1600,1150,950,1100],
-          rainfallData: [25,30,28,20,12,45,55,52,38,25,18,22],
-          totalCommunityWater: 598000,
-          totalIndividualWater: 15800,
-          userScore: 82,
-          userRank: 3,
-          totalParticipants: 8,
-          equivalents: { olympicPools: 0, households: 3, trees: 598, carbonOffset: 179 },
-          achievements: [
-            { id: 1, title: 'Water Warrior', description: 'Saved over 10,000 liters', earned: true, icon: '💧' },
-            { id: 2, title: 'Top 5 Saver', description: 'Ranked in top 5 neighbours', earned: true, icon: '🏆' },
-            { id: 3, title: 'Consistency King', description: 'Saved water for 6 months straight', earned: true, icon: '👑' },
-            { id: 4, title: 'Community Leader', description: 'Helped 3+ neighbors start harvesting', earned: false, icon: '🌟' },
-            { id: 5, title: 'Monsoon Master', description: 'Maximized collection during monsoon', earned: true, icon: '🌧️' }
-          ]
+          communityData: [0,0,0,0,0,0,0,0,0,0,0,0],
+          individualData: [0,0,0,0,0,0,0,0,0,0,0,0],
+          rainfallData: [0,0,0,0,0,0,0,0,0,0,0,0],
+          totalCommunityWater: 0,
+          totalIndividualWater: 0,
+          userScore: 0,
+          userRank: 1,
+          totalParticipants: 0,
+          equivalents: { olympicPools: 0, households: 0, trees: 0, carbonOffset: 0 },
+          achievements: []
         });
         
         setLeaderboard({
-          neighbors: [
-            { id: 1, name: 'Sarah Johnson', score: 95, waterSaved: 15000, rank: 1, avatar: '👩‍🌾' },
-            { id: 2, name: 'Mike Chen', score: 88, waterSaved: 12500, rank: 2, avatar: '👨‍💼' },
-            { id: 3, name: 'You', score: 82, waterSaved: 11200, rank: 3, avatar: '🏠' },
-            { id: 4, name: 'Emma Davis', score: 78, waterSaved: 9800, rank: 4, avatar: '👩‍🎓' },
-            { id: 5, name: 'Carlos Rodriguez', score: 75, waterSaved: 9200, rank: 5, avatar: '👨‍🔧' }
-          ],
-          userPosition: 3,
-          totalParticipants: 8
+          neighbors: [],
+          userPosition: 1,
+          totalParticipants: 0
         });
 
         setShareMessages({
-          whatsapp: '🌧️ I\'m making a difference with rainwater harvesting! 💧\n\n✅ Saved 11,200 liters this year\n🏆 Ranked #3 in my neighborhood\n🌱 Score: 82/100\n\nJoin me in conserving water for a sustainable future! 🌍',
-          twitter: '🌧️ Proud to share my rainwater harvesting impact! 💧\n\n✅ 11,200L saved this year\n🏆 #3 in neighborhood\n🌱 82/100 sustainability score\n\nEvery drop counts! Join the movement 🌍',
-          linkedin: 'I\'m excited to share my progress in sustainable water management through rooftop rainwater harvesting!'
+          whatsapp: 'Join me in rainwater harvesting for a sustainable future! 🌍',
+          twitter: 'Starting my rainwater harvesting journey! 💧',
+          linkedin: 'Exploring sustainable water management through rooftop rainwater harvesting.'
         });
       } finally {
         setLoading(false);
