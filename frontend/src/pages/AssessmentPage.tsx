@@ -374,7 +374,7 @@ const AssessmentPage = () => {
             startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
             sx={{ mt: 4, gridColumn: { xs: '1', md: '1 / -1' } }}
           >
-            {isSubmitting ? t('common.submitting') : t('assessment.submit')}
+            {isSubmitting ? t('common.submitting') : t('Submit')}
           </Button>
         </form>
       </Paper>
