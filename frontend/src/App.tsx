@@ -12,7 +12,7 @@ import ResultsPage from './pages/ResultsPage';
 import AboutPage from './pages/AboutPage';
 import CommunityImpactDashboard from './pages/CommunityImpactDashboard';
 import SustainabilityTracker from './pages/SustainabilityTracker';
-import MapDemoPage from './pages/MapDemoPage';
+
 
 // Theme
 const theme = createTheme({
@@ -24,7 +24,7 @@ const theme = createTheme({
       main: '#dc004e',
     },
     background: {
-      default: '#f5f5f5',
+      default: '#e3f2fd',
     },
   },
   typography: {
@@ -81,8 +81,6 @@ function App() {
                 <Route path="/community" element={<CommunityImpactDashboard />} />
                 <Route path="/tracker" element={<SustainabilityTracker />} />
                 <Route path="/about" element={<AboutPage />} />
-                <Route path="/map-demo" element={<MapDemoPage />} />
-                {/** Wildcard route removed intentionally */}
               </Routes>
             </Router>
           </Box>

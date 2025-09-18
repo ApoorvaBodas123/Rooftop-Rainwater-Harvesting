@@ -154,10 +154,12 @@ const ResultsPage = () => {
         }]
       }));
       
-      // Calculate water level for visualization (0-100%)
-      const maxHarvest = Math.max(...results.monthlyHarvest);
-      const currentHarvest = results.monthlyHarvest[new Date().getMonth()]; // Current month's harvest
-      const level = maxHarvest > 0 ? Math.min(100, Math.round((currentHarvest / maxHarvest) * 100)) : 0;
+      // Calculate water level for visualization (0-100%) based on user's demand adequacy
+      // If waterDemand present, compare annual harvest to annual demand; otherwise scale by 100,000L cap
+      const annualDemand = (parseFloat(formData.waterDemand || '0') || 0) * 365;
+      const level = annualDemand > 0
+        ? Math.max(0, Math.min(100, Math.round((results.annualHarvest / annualDemand) * 100)))
+        : Math.max(0, Math.min(100, Math.round((results.annualHarvest / 100000) * 100)));
       setWaterLevel(level);
       setTankFillProgress(level);
       setLoading(false);
@@ -372,79 +374,77 @@ const ResultsPage = () => {
 
   if (loading) {
     return (
-      <Box 
-        display="flex" 
-        flexDirection="column" 
-        alignItems="center" 
-        justifyContent="center" 
-        minHeight="60vh"
-      >
-        <CircularProgress size={60} thickness={4} sx={{ mb: 3 }} />
-        <Typography variant="h6" color="text.secondary">
-          Calculating your rainwater harvesting potential...
-        </Typography>
+      <Box sx={{ minHeight: '100vh', backgroundColor: '#eeeeee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box textAlign="center">
+          <CircularProgress size={60} thickness={4} sx={{ mb: 3 }} />
+          <Typography variant="h6" color="text.secondary">
+            Calculating your rainwater harvesting potential...
+          </Typography>
+        </Box>
       </Box>
     );
   }
 
   if (!resultData || !formData) {
     return (
-      <Container maxWidth="md" sx={{ py: 8, textAlign: 'center' }}>
-        <Typography variant="h5" color="error" gutterBottom>
-          Error: No assessment data found
-        </Typography>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={() => navigate('/')}
-          startIcon={<HomeIcon />}
-          sx={{ mt: 3 }}
-        >
-          Back to Home
-        </Button>
-      </Container>
+      <Box sx={{ minHeight: '100vh', backgroundColor: '#eeeeee' }}>
+        <Container maxWidth="md" sx={{ py: 8, textAlign: 'center' }}>
+          <Typography variant="h5" color="error" gutterBottom>
+            Error: No assessment data found
+          </Typography>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => navigate('/')}
+            startIcon={<HomeIcon />}
+            sx={{ mt: 3 }}
+          >
+            Back to Home
+          </Button>
+        </Container>
+      </Box>
     );
   }
 
   const systemDetails = getSystemDetails(resultData.recommendedSystem.toLowerCase());
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#eeeeee' }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
       <div ref={reportRef}>
         {/* Header */}
-        <Box mb={4} display="flex" alignItems="center" justifyContent="space-between">
+        <Box mb={3} display="flex" alignItems="center" justifyContent="space-between">
           <Box display="flex" alignItems="center">
             <IconButton onClick={() => navigate('/assessment')} sx={{ mr: 2 }}>
               <ArrowBackIcon />
             </IconButton>
-            <Typography variant="h4" component="h1">
+            <Typography variant="h5" component="h1">
               {t('results.title')}
             </Typography>
           </Box>
-          <Button 
-            variant="outlined" 
-            color="primary" 
-            startIcon={<DownloadIcon />}
-            onClick={handleDownloadPDF}
-          >
-            {t('results.downloadReport')}
-          </Button>
+          {/* Top-right download removed; CTA kept at page bottom */}
         </Box>
         
         <Typography variant="subtitle1" color="text.secondary" mb={4}>
           {t('results.subtitle')}
         </Typography>
         
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, mt: 2 }}>
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', md: '1fr 2fr' },
+          gap: 3,
+          mt: 2,
+          alignItems: 'start'
+        }}>
           {/* Left column - Water tank visualization */}
-          <Box component={Paper} elevation={3} sx={{ p: 3, borderRadius: 2, flex: 1 }}>
-            <Typography variant="h6" gutterBottom fontWeight="bold">
+          <Box component={Paper} elevation={3} sx={{ p: 2, borderRadius: 2, gridColumn: { md: '1 / span 1' }, alignSelf: 'start' }}>
+            <Typography variant="subtitle1" gutterBottom fontWeight="bold">
               {t('results.annualHarvest')}
             </Typography>
             
             <Box 
               position="relative" 
-              height={400} 
+              height={300} 
               display="flex" 
               flexDirection="column"
               alignItems="center"
@@ -462,12 +462,12 @@ const ResultsPage = () => {
                 animate={{ height: `${waterLevel}%` }}
                 transition={{ duration: 2, ease: 'easeOut' }}
                 style={{
-                  width: '80%',
+                  width: '78%',
                   background: 'linear-gradient(to top, #1976d2, #64b5f6)',
                   borderRadius: '0 0 40px 40px',
                   position: 'absolute',
                   bottom: '10%',
-                  left: '10%',
+                  left: '11%',
                   zIndex: 1,
                   display: 'flex',
                   alignItems: 'flex-end',
@@ -489,14 +489,14 @@ const ResultsPage = () => {
                     textAlign: 'center',
                     color: 'white',
                     textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-                    paddingBottom: '10px',
+                    paddingBottom: '8px',
                   }}
                 >
-                  <Typography variant="h4" fontWeight="bold">
+                  <Typography variant="h5" fontWeight="bold">
                     <CountUp 
                       end={resultData.annualHarvest} 
                       duration={2.5} 
-                      separator=","
+                      separator="," 
                     />
                   </Typography>
                   <Typography variant="body2">liters/year</Typography>
@@ -506,8 +506,8 @@ const ResultsPage = () => {
               {/* Water tank outline */}
               <Box
                 position="relative"
-                width="80%"
-                height="80%"
+                width="78%"
+                height="78%"
                 border="3px solid #1976d2"
                 borderRadius="40px"
                 sx={{
@@ -535,7 +535,7 @@ const ResultsPage = () => {
               </Box>
               
               {/* Progress bar */}
-              <Box width="100%" mt={3} px={2}>
+              <Box width="100%" mt={2} px={1.5}>
                 <Box display="flex" justifyContent="space-between" mb={1}>
                   <Typography variant="caption">0%</Typography>
                   <Typography variant="caption">100%</Typography>
@@ -554,139 +554,91 @@ const ResultsPage = () => {
               </Box>
             </Box>
             
-            <Box mt={3} textAlign="center">
-              <Typography variant="body2" color="text.secondary">
-                This represents your annual rainwater harvesting potential
-              </Typography>
-            </Box>
+            {/* Caption removed to tighten card */}
           </Box>
 
           {/* Right column - Results and recommendations */}
-          <Box sx={{ flex: 2 }}>
+          <Box sx={{ gridColumn: { md: '2 / span 1' } }}>
             {/* Key metrics */}
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' }, gap: 2, mb: 4 }}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' }, gap: 1.5, mb: 3 }}>
               <Card elevation={2} sx={{ height: '100%', borderLeft: `4px solid ${theme.palette.primary.main}`, borderRadius: '0 4px 4px 0' }}>
-                <CardContent>
+                <CardContent sx={{ p: 2 }}>
                   <Box display="flex" alignItems="center" mb={1}>
                     <WaterDropIcon color="primary" sx={{ mr: 1 }} />
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary">
                       {t('results.monthlyHarvest')}
                     </Typography>
                   </Box>
-                  <Typography variant="h5" fontWeight="bold">
+                  <Typography variant="h6" fontWeight="bold">
                     <CountUp end={Math.round(resultData.annualHarvest / 12)} duration={2} separator="," />
-                    <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
+                    <Typography component="span" variant="caption" color="text.secondary" ml={0.5}>
                       liters
                     </Typography>
                   </Typography>
                 </CardContent>
               </Card>
               <Card elevation={2} sx={{ height: '100%', borderLeft: `4px solid ${theme.palette.success.main}`, borderRadius: '0 4px 4px 0' }}>
-                <CardContent>
+                <CardContent sx={{ p: 2 }}>
                   <Box display="flex" alignItems="center" mb={1}>
                     <WaterIcon color="success" sx={{ mr: 1 }} />
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary">
                       {t('results.dailyHarvest')}
                     </Typography>
                   </Box>
-                  <Typography variant="h5" fontWeight="bold">
+                  <Typography variant="h6" fontWeight="bold">
                     <CountUp end={resultData.dailyHarvest} duration={2} separator="," />
-                    <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
+                    <Typography component="span" variant="caption" color="text.secondary" ml={0.5}>
                       liters
                     </Typography>
                   </Typography>
                 </CardContent>
               </Card>
               <Card elevation={2} sx={{ height: '100%', borderLeft: `4px solid ${theme.palette.warning.main}`, borderRadius: '0 4px 4px 0' }}>
-                <CardContent>
+                <CardContent sx={{ p: 2 }}>
                   <Box display="flex" alignItems="center" mb={1}>
                     <CheckCircleIcon color="warning" sx={{ mr: 1 }} />
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary">
                       {t('results.recommendation')}
                     </Typography>
                   </Box>
-                  <Typography variant="h6" fontWeight="bold" textTransform="capitalize">
+                  <Typography variant="subtitle1" fontWeight="bold" textTransform="capitalize">
                     {resultData.recommendedSystem} System
                   </Typography>
                 </CardContent>
               </Card>
               <Card elevation={2} sx={{ height: '100%', borderLeft: `4px solid ${theme.palette.info.main}`, borderRadius: '0 4px 4px 0' }}>
-                <CardContent>
+                <CardContent sx={{ p: 2 }}>
                   <Box display="flex" alignItems="center" mb={1}>
                     <TrendingUpIcon color="info" sx={{ mr: 1 }} />
-                    <Typography variant="subtitle2" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary">
                       {t('results.paybackPeriod')}
                     </Typography>
                   </Box>
-                  <Typography variant="h5" fontWeight="bold">
+                  <Typography variant="h6" fontWeight="bold">
                     ~{resultData.paybackPeriod} {resultData.paybackPeriod === 1 ? 'year' : 'years'}
                   </Typography>
                 </CardContent>
               </Card>
             </Box>
 
-            {/* Coefficient & Suggested Structure */}
-            <Paper elevation={3} sx={{ p: 3, borderRadius: 2, mb: 4 }}>
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-                <Card elevation={1}>
-                  <CardContent>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                      Runoff Coefficient Used
-                    </Typography>
-                    <Typography variant="h5" fontWeight="bold">
-                      {typeof resultData.runoffCoefficient === 'number' ? resultData.runoffCoefficient.toFixed(2) : '—'}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      e.g., RCC roof ≈ 0.8, Metal ≈ 0.9
-                    </Typography>
-                  </CardContent>
-                </Card>
-                <Card elevation={1}>
-                  <CardContent>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                      Suggested Structure
-                    </Typography>
-                    <Typography variant="h6" fontWeight="bold" gutterBottom>
-                      {resultData.structure?.type || '—'}
-                    </Typography>
-                    {resultData.structure && (
-                      <Typography variant="body2" color="text.secondary">
-                        Dimensions (L×B×D): {resultData.structure.dimensions.length} × {resultData.structure.dimensions.breadth} × {resultData.structure.dimensions.depth} {resultData.structure.dimensions.unit}
-                      </Typography>
-                    )}
-                  </CardContent>
-                </Card>
-              </Box>
-            </Paper>
-
-            {/* Monthly harvest chart */}
-            <Paper elevation={3} sx={{ p: 3, borderRadius: 2, mb: 4 }}>
-              <Typography variant="h6" gutterBottom fontWeight="bold">
-                Monthly Rainwater Harvest
-              </Typography>
-              <Box height={300}>
-                <Bar data={chartData} options={chartOptions} />
-              </Box>
-            </Paper>
-            
-            {/* Environmental impact */}
-            <Paper elevation={3} sx={{ p: 3, borderRadius: 2, mb: 4 }}>
-              <Typography variant="h6" gutterBottom fontWeight="bold" display="flex" alignItems="center">
+            {/* Environmental impact - right column */}
+            <Paper elevation={3} sx={{ p: 2.5, borderRadius: 2, gridColumn: { md: '2 / span 1' } }}>
+              <Typography variant="subtitle1" gutterBottom fontWeight="bold" display="flex" alignItems="center">
                 <WaterDropIcon color="success" sx={{ mr: 1 }} />
                 {t('results.environmentalImpact')}
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' }, gap: 3 }}>
                 <Card variant="outlined">
-                  <CardContent>
+                  <CardContent sx={{ p: 2 }}>
                     <Box display="flex" alignItems="center" mb={1}>
                       <WaterDropIcon color="primary" sx={{ mr: 1 }} />
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography variant="caption" color="text.secondary">
                         {t('results.waterSaved')}
                       </Typography>
                     </Box>
-                    <Typography variant="h4" fontWeight="bold" color="primary">
+                    <Typography variant="h5" fontWeight="bold" color="primary">
                       <CountUp end={resultData.environmentalImpact.waterSaved} duration={2.5} separator="," />
-                      <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
+                      <Typography component="span" variant="caption" color="text.secondary" ml={0.5}>
                         liters/year
                       </Typography>
                     </Typography>
@@ -696,16 +648,16 @@ const ResultsPage = () => {
                   </CardContent>
                 </Card>
                 <Card variant="outlined">
-                  <CardContent>
+                  <CardContent sx={{ p: 2 }}>
                     <Box display="flex" alignItems="center" mb={1}>
                       <WaterDropIcon color="success" sx={{ mr: 1 }} />
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography variant="caption" color="text.secondary">
                         {t('results.co2Reduction')}
                       </Typography>
                     </Box>
-                    <Typography variant="h4" fontWeight="bold" color="success.main">
+                    <Typography variant="h5" fontWeight="bold" color="success.main">
                       <CountUp end={resultData.environmentalImpact.co2Reduction} duration={2.5} separator="," />
-                      <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
+                      <Typography component="span" variant="caption" color="text.secondary" ml={0.5}>
                         kg CO₂/year
                       </Typography>
                     </Typography>
@@ -715,60 +667,101 @@ const ResultsPage = () => {
                   </CardContent>
                 </Card>
               </Box>
-            </Paper>
-            
-            {/* Recommended system */}
-            <Paper elevation={3} sx={{ p: 3, borderRadius: 2, mb: 4 }}>
-              <Typography variant="h6" gutterBottom fontWeight="bold">
-                {systemDetails.name} - {systemDetails.description}
-              </Typography>
-              
-              <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                Estimated Cost: <span style={{ color: theme.palette.primary.main, fontWeight: 'bold' }}>
-                  ₹{resultData.estimatedCost.toLocaleString()}
-                </span>
-              </Typography>
-              
-              <Typography variant="subtitle2" fontWeight="bold" mb={1}>
-                Includes:
-              </Typography>
-              
-              <ul style={{ marginTop: 0, paddingLeft: 20 }}>
-                {systemDetails.components.map((item, index) => (
-                  <li key={index}>
-                    <Typography variant="body2">{item}</Typography>
-                  </li>
-                ))}
-              </ul>
-              
-              <Typography variant="body2" color="text.secondary" mt={2} fontStyle="italic">
-                Note: This is an estimate. Actual costs may vary based on location, materials, and installation requirements.
-              </Typography>
-            </Paper>
-            
-            {/* Call to action */}
-            <Box display="flex" justifyContent="space-between" mt={4}>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => navigate('/assessment')}
-              >
-                {t('results.startNewAssessment')}
-              </Button>
-              
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleDownloadPDF}
-                startIcon={<DownloadIcon />}
-              >
-                {t('results.downloadReport')}
-              </Button>
+          </Paper>
+
+          {/* Monthly harvest chart - placed under the tank (left) */}
+          </Box>
+          <Paper elevation={3} sx={{ p: 2.5, borderRadius: 2, gridColumn: { md: '1 / span 1' }, alignSelf: 'start' }}>
+            <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+              Monthly Rainwater Harvest
+            </Typography>
+            <Box height={300}>
+              <Bar data={chartData} options={chartOptions} />
             </Box>
+          </Paper>
+
+          {/* Coefficient & Suggested Structure - span both columns */}
+          <Paper elevation={3} sx={{ p: 3, borderRadius: 2, mb: 0, gridColumn: { md: '1 / -1' } }}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+              <Card elevation={1}>
+                <CardContent>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Runoff Coefficient Used
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold">
+                    {typeof resultData.runoffCoefficient === 'number' ? resultData.runoffCoefficient.toFixed(2) : '—'}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    e.g., RCC roof ≈ 0.8, Metal ≈ 0.9
+                  </Typography>
+                </CardContent>
+              </Card>
+              <Card elevation={1}>
+                <CardContent>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Suggested Structure
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold" gutterBottom>
+                    {resultData.structure?.type || '—'}
+                  </Typography>
+                  {resultData.structure && (
+                    <Typography variant="body2" color="text.secondary">
+                      Dimensions (L×B×D): {resultData.structure.dimensions.length} × {resultData.structure.dimensions.breadth} × {resultData.structure.dimensions.depth} {resultData.structure.dimensions.unit}
+                    </Typography>
+                  )}
+                </CardContent>
+              </Card>
+            </Box>
+          </Paper>
+
+          {/* Recommended system - span both columns */}
+          <Paper elevation={3} sx={{ p: 3, borderRadius: 2, mb: 4, gridColumn: { md: '1 / -1' } }}>
+            <Typography variant="h6" gutterBottom fontWeight="bold">
+              {systemDetails.name} - {systemDetails.description}
+            </Typography>
+            <Typography variant="subtitle2" color="text.secondary" mb={2}>
+              Estimated Cost: <span style={{ color: theme.palette.primary.main, fontWeight: 'bold' }}>
+                ₹{resultData.estimatedCost.toLocaleString()}
+              </span>
+            </Typography>
+            <Typography variant="subtitle2" fontWeight="bold" mb={1}>
+              Includes:
+            </Typography>
+            <ul style={{ marginTop: 0, paddingLeft: 20 }}>
+              {systemDetails.components.map((item, index) => (
+                <li key={index}>
+                  <Typography variant="body2">{item}</Typography>
+                </li>
+              ))}
+            </ul>
+            <Typography variant="body2" color="text.secondary" mt={2} fontStyle="italic">
+              Note: This is an estimate. Actual costs may vary based on location, materials, and installation requirements.
+            </Typography>
+          </Paper>
+
+          {/* Call to action - span both columns */}
+          <Box display="flex" justifyContent="space-between" mt={4} sx={{ gridColumn: { md: '1 / -1' } }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => navigate('/assessment')}
+            >
+              {t('results.startNewAssessment')}
+            </Button>
+            
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleDownloadPDF}
+              startIcon={<DownloadIcon />}
+            >
+              {t('results.downloadReport')}
+            </Button>
           </Box>
         </Box>
       </div>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

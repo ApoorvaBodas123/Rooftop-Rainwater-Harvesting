@@ -42,6 +42,11 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Sync internal state with external value prop
+  useEffect(() => {
+    setSearchQuery(value);
+  }, [value]);
+
   // Debounced search function
   useEffect(() => {
     if (searchTimeoutRef.current) {
