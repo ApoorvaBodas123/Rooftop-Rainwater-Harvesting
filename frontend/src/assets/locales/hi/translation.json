@@ -9,7 +9,9 @@
     "assessment": "मूल्यांकन शुरू करें",
     "results": "परिणाम",
     "language": "Language",
-    "selectLanguage": "भाषा चुनें"
+    "selectLanguage": "भाषा चुनें",
+    "login": "लॉगिन",
+    "signup": "साइन अप"
   },
   "landing": {
     "heroTitle": "वर्षा जल संचयन करें, जीवन बचाएं",
@@ -32,6 +34,37 @@
           "description": "जानें कि आप कितना पानी और पैसा बचा सकते हैं"
         }
       ]
+    }
+  },
+  "auth": {
+    "email": "ईमेल पता",
+    "name": "पूरा नाम",
+    "password": "पासवर्ड",
+    "loading": "प्रोसेस हो रहा है...",
+    "error": "त्रुटि",
+    "logout": "लॉग आउट",
+    "login": {
+      "title": "साइन इन करें",
+      "button": "साइन इन",
+      "noAccount": "खाता नहीं है? साइन अप करें",
+      "forgotPassword": "पासवर्ड भूल गए?",
+      "success": "सफलतापूर्वक लॉगिन हुए!"
+    },
+    "signup": {
+      "title": "खाता बनाएं",
+      "button": "साइन अप करें",
+      "alreadyHaveAccount": "पहले से ही एक खाता है? साइन इन करें",
+      "confirmPassword": "पासवर्ड की पुष्टि करें",
+      "passwordsDontMatch": "पासवर्ड मेल नहीं खाते",
+      "success": "खाता सफलतापूर्वक बनाया गया!"
+    },
+    "errors": {
+      "required": "यह फ़ील्ड आवश्यक है",
+      "invalidEmail": "कृपया एक मान्य ईमेल पता दर्ज करें",
+      "passwordLength": "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
+      "invalidCredentials": "अमान्य ईमेल या पासवर्ड",
+      "emailInUse": "यह ईमेल पहले से उपयोग में है",
+      "networkError": "नेटवर्क त्रुटि। कृपया बाद में पुनः प्रयास करें"
     }
   },
   "assessment": {

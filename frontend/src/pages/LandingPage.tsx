@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { 
   Box, 
   Button, 
@@ -14,8 +14,10 @@ import {
   Menu,
   MenuItem,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Avatar
 } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 import type { Theme } from '@mui/material';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -113,10 +115,11 @@ const AnimatedTypography = styled(Typography)(() => ({
 
 const LandingPage = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(null);
 
   const [wastedWater, setWastedWater] = useState(400); // Initial value set to 400 billion
 
@@ -138,10 +141,6 @@ const LandingPage = () => {
     setAnchorEl(null);
   };
 
-  const handleNavigate = (path: string) => {
-    navigate(path);
-    handleClose();
-  };
 
   const features = [
     {
@@ -161,12 +160,25 @@ const LandingPage = () => {
     }
   ];
 
-  const navItems = [
-    { label: 'Community', path:'/community'},
+  const commonNavItems = [
+    { label: 'Community', path: '/community' },
     { label: 'Help', path: '/about' },
     { label: 'Tracker', path: '/tracker' },
+<<<<<<< HEAD
     { label: 'Start Assessment', path: '/assessment' }
+=======
+    { label: 'Start Assessment', path: '/assessment' },
+>>>>>>> d238aaabaf1545c94ddecbec855cca69ee325f5e
   ];
+
+  const authNavItems = isAuthenticated
+    ? []
+    : [
+        { label: 'Login', path: '/login' },
+        { label: 'Sign Up', path: '/signup' }
+      ];
+
+  const navItems = [...commonNavItems, ...authNavItems];
 
   return (
     <PageWrapper>
@@ -220,14 +232,29 @@ const LandingPage = () => {
                   onClose={handleClose}
                 >
                   {navItems.map((item) => (
-                    <MenuItem key={item.label} onClick={() => handleNavigate(item.path)}>
+                    <MenuItem 
+                      key={item.label} 
+                      component={RouterLink} 
+                      to={item.path}
+                      onClick={handleClose}
+                    >
                       {item.label}
                     </MenuItem>
                   ))}
+                  {isAuthenticated && (
+                    <MenuItem 
+                      onClick={() => {
+                        logout();
+                        handleClose();
+                      }}
+                    >
+                      Sign Out
+                    </MenuItem>
+                  )}
                 </Menu>
               </>
             ) : (
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {navItems.map((item) => (
                   <Button 
                     key={item.label} 
@@ -248,6 +275,42 @@ const LandingPage = () => {
                     {item.label}
                   </Button>
                 ))}
+                {isAuthenticated ? (
+                  <>
+                    <IconButton
+                      onClick={(e) => setProfileAnchorEl(e.currentTarget)}
+                      sx={{ p: 0, ml: 1 }}
+                    >
+                      <Avatar 
+                        alt={user?.name || 'User'} 
+                        src="/static/images/avatar/2.jpg"
+                        sx={{ width: 32, height: 32 }}
+                      />
+                    </IconButton>
+                    <Menu
+                      anchorEl={profileAnchorEl}
+                      open={Boolean(profileAnchorEl)}
+                      onClose={() => setProfileAnchorEl(null)}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                    >
+                      <MenuItem 
+                        onClick={() => {
+                          logout();
+                          setProfileAnchorEl(null);
+                        }}
+                      >
+                        Sign Out
+                      </MenuItem>
+                    </Menu>
+                  </>
+                ) : null}
               </Box>
             )}
           </Toolbar>
@@ -277,7 +340,8 @@ const LandingPage = () => {
                   fontSize: { xs: '2.5rem', md: '4.5rem' }, 
                   letterSpacing: '-2px', 
                   textShadow: '0 4px 8px rgba(0,0,0,0.3)', 
-                  animationDelay: '0.2s' 
+                  animationDelay: '0.2s',
+                  color: '#ffffff' // Explicitly set text color to white
                 }}
               >
                 {t('landing.heroTitle')}
@@ -291,7 +355,8 @@ const LandingPage = () => {
                   opacity: 0.95, 
                   mb: 6, 
                   textShadow: '0 2px 4px rgba(0,0,0,0.2)', 
-                  animationDelay: '0.4s' 
+                  animationDelay: '0.4s',
+                  color: '#ffffff' // Explicitly set text color to white
                 }}
               >
                 {t('landing.heroSubtitle')}
@@ -300,7 +365,12 @@ const LandingPage = () => {
               {/* Live counter for wasted water */}
               <Typography
                 variant="h6"
-                sx={{ fontSize: { xs: '1rem', md: '1.3rem' }, mb: 6, fontWeight: 600 }}
+                sx={{ 
+                  fontSize: { xs: '1rem', md: '1.3rem' }, 
+                  mb: 6, 
+                  fontWeight: 600,
+                  color: '#ffffff' // Explicitly set text color to white
+                }}
               >
                 India wastes <span style={{ fontWeight: 'bold' }}>{wastedWater.toLocaleString()}</span> billion liters of rainwater each year — let's change that!
               </Typography>
@@ -308,7 +378,7 @@ const LandingPage = () => {
               <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
                 <AnimatedButton
                   variant="contained"
-                  onClick={() => navigate('/assessment')}
+                  onClick={() => window.location.href = '/assessment'}
                   startIcon={<NatureIcon />}
                 >
                   Try Our Simulator

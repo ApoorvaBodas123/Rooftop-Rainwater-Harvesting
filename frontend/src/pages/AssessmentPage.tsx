@@ -31,6 +31,10 @@ import { useForm, Controller } from 'react-hook-form';
 // Use VITE_API_BASE_URL if set, otherwise default to localhost:5000
 const API_BASE = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:5000';
 
+// API base (configurable via Vite env)
+// Use VITE_API_BASE_URL if set, otherwise default to localhost:5000
+const API_BASE = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:5000';
+
 // Form data type
 type FormValues = {
   location: {
@@ -109,6 +113,7 @@ const AssessmentPage = () => {
     try {
       setIsSubmitting(true);
       setError(null);
+<<<<<<< HEAD
       
       // Validate required fields manually
       if (!data.location.address || data.location.coordinates[0] === 0) {
@@ -188,6 +193,58 @@ const AssessmentPage = () => {
       
       // Fallback to local navigation on network errors
       console.log('Falling back to local results due to error');
+=======
+
+      // Prepare payload for backend
+      const payload = {
+        location: {
+          coordinates: data.location?.coordinates,
+          address: data.location?.address || ''
+        },
+        roofArea: Number(data.roofArea),
+        roofType: data.roofType,
+        waterDemand: Number(data.waterDemand)
+      };
+
+      // Try backend first
+      const response = await fetch(`${API_BASE}/api/assessments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        const resJson = await response.json();
+        toast.success('Assessment saved and calculated successfully!');
+        navigate('/results', { state: { assessment: resJson.data, calculations: resJson.calculations } });
+        return;
+      }
+
+      // Show backend error details instead of silently falling back
+      let errorMessage = `Request failed (${response.status})`;
+      try {
+        const err = await response.json();
+        if (err?.error) {
+          errorMessage = err.error;
+          if (err.details) {
+            const detailsText = Object.entries(err.details).map(([k, v]) => `${k}: ${v}`).join('; ');
+            if (detailsText) errorMessage += ` — ${detailsText}`;
+          }
+        }
+      } catch (_) {
+        // ignore JSON parse errors
+      }
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.warn('Backend responded with error; not using fallback.');
+      return;
+    } catch (err: any) {
+      const errorMessage = err.message || 'An error occurred while submitting the form';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.error('Submission error:', err);
+      // Fallback to local navigation on network errors
+>>>>>>> d238aaabaf1545c94ddecbec855cca69ee325f5e
       navigate('/results', { state: { formData: data } });
     } finally {
       setIsSubmitting(false);
