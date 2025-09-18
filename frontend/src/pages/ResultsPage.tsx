@@ -460,16 +460,8 @@ const ResultsPage = () => {
               {t('results.title')}
             </Typography>
           </Box>
-          <Button 
-            variant="outlined" 
-            color="primary" 
-            startIcon={<DownloadIcon />}
-            onClick={handleDownloadPDF}
-          >
-            {t('results.downloadReport')}
-          </Button>
+    
         </Box>
-        
         <Typography variant="subtitle1" color="text.secondary" mb={4}>
           {t('results.subtitle')}
         </Typography>
