@@ -43,7 +43,6 @@ const darkText = '#0f172a';   // slate-900
 const subtleText = '#334155'; // slate-700
 const cardBg = 'rgba(255,255,255,0.94)';
 
-
 // Page background wrapper (bring back subtle rain ripples image with soft overlay)
 const PageWrapper = styled(Box)(() => ({
 
@@ -56,22 +55,16 @@ const PageWrapper = styled(Box)(() => ({
   width: '100%',
   backgroundColor: '#f5f5f5',
 }));
-
 // Overlay wrapper (used for BOTH hero + features for seamless blend)
 const OverlayWrapper = styled(Box)(() => ({
-
   background: 'transparent',
   width: '100%',
   color: darkText,
-
 }));
-
 // HeroBox
 const HeroBox = styled(Box)(() => ({
   position: 'relative',
-
   minHeight: '75vh',
-
   overflow: 'hidden',
   display: 'flex',
   alignItems: 'flex-start',
@@ -414,20 +407,17 @@ const LandingPage = () => {
         </HeroBox>
 
         {/* Features Section (no background break) */}
-
-        <Box sx={{ py: { xs: 3, md: 5 } }}>
-
+        <Box sx={{ mt: -6 }}>
           <Container maxWidth="lg">
             <AnimatedTypography
               variant="h3"
               textAlign="center"
-
-              mb={4}
               sx={{ 
                 fontSize: { xs: '1.6rem', md: '2.2rem' }, 
                 fontWeight: 800, 
                 color: darkText, 
-
+                mt: 0,
+                mb: 4,
                 animationDelay: '0.6s' 
               }}
             >
@@ -496,7 +486,7 @@ const LandingPage = () => {
         </Box>
 
         {/* Story & Importance Section (richer, more visual) */}
-        <Box sx={{ py: { xs: 8, md: 10 }, background: 'rgba(255,255,255,0.9)' }}>
+        <Box sx={{ py: { xs: 6, md: 8 }, background: 'rgba(255,255,255,0.9)' }}>
           <Container maxWidth="lg">
             <Box
               sx={{
