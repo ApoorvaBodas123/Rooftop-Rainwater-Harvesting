@@ -4,7 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
@@ -22,20 +22,25 @@ import SignupPage from './pages/SignupPage';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1a73e8',
-      light: '#63a4ff',
-      dark: '#0045b5',
+      main: '#2563eb',
+      light: '#60a5fa',
+      dark: '#1e40af',
       contrastText: '#fff',
     },
     secondary: {
-      main: '#0d47a1',
-      light: '#5472d3',
-      dark: '#002171',
+      main: '#0ea5e9',
+      light: '#7dd3fc',
+      dark: '#0369a1',
       contrastText: '#fff',
     },
     background: {
 
-      default: '#e3f2fd',
+      default: '#f5f9ff',
+      paper: '#ffffff',
+    },
+    text: {
+      primary: '#0f172a',
+      secondary: '#334155',
 
     },
   },
@@ -43,32 +48,32 @@ const theme = createTheme({
     fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     h1: {
       fontWeight: 700,
-      color: '#1a237e',
+      color: '#0f172a',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
     h2: {
       fontWeight: 600,
-      color: '#1a237e',
+      color: '#0f172a',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
     h3: {
       fontWeight: 600,
-      color: '#1a237e',
+      color: '#0f172a',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
     h4: {
       fontWeight: 600,
-      color: '#1a237e',
+      color: '#0f172a',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
     h5: {
       fontWeight: 500,
-      color: '#1a237e',
+      color: '#0f172a',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
     h6: {
       fontWeight: 500,
-      color: '#1a237e',
+      color: '#0f172a',
       fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
     },
   },

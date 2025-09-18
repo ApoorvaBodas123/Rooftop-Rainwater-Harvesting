@@ -465,9 +465,10 @@ const ResultsPage = () => {
               {t('results.title')}
             </Typography>
           </Box>
+
           {/* Top-right download removed; CTA kept at page bottom */}
+
         </Box>
-        
         <Typography variant="subtitle1" color="text.secondary" mb={4}>
           {t('results.subtitle')}
         </Typography>
