@@ -20,6 +20,7 @@ interface DashboardData {
 // Styled Components
 const BackgroundContainer = styled(Box)({
   minHeight: '100vh',
+
   backgroundColor: '#eeeeee',
 });
 
@@ -39,19 +40,34 @@ const GlassCard = styled(Paper)({
   borderRadius: 12,
   border: '1px solid rgba(0,0,0,0.08)',
   boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+
 });
 
 const AnimatedButton = styled(Button)({
-  background: 'linear-gradient(45deg, #2196f3, #21cbf3)', borderRadius: 25, padding: '12px 30px',
-  fontSize: '1.1rem', fontWeight: 'bold', textTransform: 'none', boxShadow: '0 4px 20px rgba(33, 150, 243, 0.3)',
-  transition: 'all 0.3s ease', '&:hover': { background: 'linear-gradient(45deg, #1976d2, #0288d1)', transform: 'translateY(-2px)', boxShadow: '0 6px 25px rgba(33, 150, 243, 0.4)' }
+  background: 'linear-gradient(45deg, #2196f3, #21cbf3)',
+  borderRadius: 8,
+  padding: '8px 16px',
+  fontSize: '0.9rem',
+  fontWeight: 'bold',
+  textTransform: 'none',
+  boxShadow: '0 2px 8px rgba(33, 150, 243, 0.3)',
+  transition: 'all 0.3s ease',
+  '&:hover': { 
+    background: 'linear-gradient(45deg, #1976d2, #0288d1)',
+    transform: 'translateY(-1px)',
+    boxShadow: '0 4px 12px rgba(33, 150, 243, 0.4)' 
+  }
 });
 
 const StatsAvatar = styled(Avatar)<{ variant?: string }>(({ variant }) => ({
+
   width: 48, height: 48, fontSize: '1.1rem', boxShadow: '0 2px 8px rgba(33, 150, 243, 0.2)',
+
   background: {
-    water: 'linear-gradient(45deg, #2196f3, #03a9f4)', streak: 'linear-gradient(45deg, #4caf50, #66bb6a)',
-    tree: 'linear-gradient(45deg, #9c27b0, #ab47bc)', badge: 'linear-gradient(45deg, #ff9800, #ffb74d)',
+    water: 'linear-gradient(45deg, #2196f3, #03a9f4)',
+    streak: 'linear-gradient(45deg, #4caf50, #66bb6a)',
+    tree: 'linear-gradient(45deg, #9c27b0, #ab47bc)',
+    badge: 'linear-gradient(45deg, #ff9800, #ffb74d)',
     milestone: 'linear-gradient(45deg, #f44336, #ff7043)'
   }[variant as string] || 'linear-gradient(45deg, #2196f3, #03a9f4)'
 }));
@@ -65,6 +81,7 @@ const StatCard: React.FC<{
   return (
     <Grow in={animateCards} timeout={timeout}>
       <StyledCard variant={variant} elevation={0}>
+
         <CardContent sx={{ textAlign: 'center' }}>
           <StatsAvatar variant={variant} sx={{ margin: '0 auto', mb: 1 }}>{''}</StatsAvatar>
           <Typography variant="caption" color="text.secondary" gutterBottom>{title}</Typography>
@@ -76,8 +93,8 @@ const StatCard: React.FC<{
 
           {progress !== undefined && (
             <LinearProgress variant="determinate" value={progress} sx={{ 
-              mt: 2, borderRadius: 10, height: 10, background: `rgba(${variant === 'tree' ? '156, 39, 176' : '0, 0, 0'}, 0.1)`,
-              '& .MuiLinearProgress-bar': { background: variant === 'tree' ? 'linear-gradient(90deg, #9c27b0, #ab47bc)' : 'currentColor', borderRadius: 10 }
+              mt: 1, borderRadius: 4, height: 6, backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              '& .MuiLinearProgress-bar': { backgroundColor: 'currentColor', borderRadius: 4 }
             }} />
           )}
         </CardContent>
@@ -143,19 +160,23 @@ const SustainabilityTracker: React.FC = () => {
 
   if (loading) return (
     <BackgroundContainer>
+
       <Container maxWidth="lg" sx={{ py: 8, textAlign: 'center', position: 'relative', zIndex: 2 }}>
         <StatsAvatar sx={{ margin: '0 auto', mb: 2 }}><WaterDrop /></StatsAvatar>
         <Typography variant="h5" gutterBottom sx={{ color: 'text.primary', fontWeight: 'bold' }}>Water Sustainability Tracker</Typography>
         <CircularProgress sx={{ mt: 2 }} size={60} thickness={4} />
         <Typography variant="body2" sx={{ mt: 2, color: '#666' }}>Loading your water conservation journey...</Typography>
+
       </Container>
     </BackgroundContainer>
   );
 
   if (!data) return (
     <BackgroundContainer>
+
       <Container maxWidth="lg" sx={{ py: 8, textAlign: 'center', position: 'relative', zIndex: 2 }}>
         <Typography variant="h5" gutterBottom color="text.primary">Failed to load tracker data</Typography>
+
         <AnimatedButton onClick={fetchDashboardData} startIcon={<Refresh />}>Retry Loading</AnimatedButton>
       </Container>
     </BackgroundContainer>
@@ -163,6 +184,7 @@ const SustainabilityTracker: React.FC = () => {
 
   return (
     <BackgroundContainer>
+
       <Container maxWidth="lg" sx={{ py: 3, position: 'relative', zIndex: 2 }}>
         
         {/* Header */}
@@ -172,20 +194,23 @@ const SustainabilityTracker: React.FC = () => {
             <Box>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.primary' }}>Water Sustainability Tracker</Typography>
               <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>Track your impact, save our planet</Typography>
+
             </Box>
           </Box>
-          <Box display="flex" gap={2}>
+          <Box display="flex" gap={1}>
             <Tooltip title="Refresh Data">
-              <IconButton onClick={fetchDashboardData} sx={{ background: 'rgba(33, 150, 243, 0.1)', '&:hover': { background: 'rgba(33, 150, 243, 0.2)' } }}>
+              <IconButton onClick={fetchDashboardData} size="small" sx={{ backgroundColor: 'rgba(33, 150, 243, 0.1)', '&:hover': { backgroundColor: 'rgba(33, 150, 243, 0.2)' } }}>
                 <Refresh />
               </IconButton>
             </Tooltip>
-            <AnimatedButton onClick={() => setAddWaterOpen(true)} startIcon={<Add />}>Add Water Saved</AnimatedButton>
+            <AnimatedButton onClick={() => setAddWaterOpen(true)} startIcon={<Add />} size="small">Add Water Saved</AnimatedButton>
           </Box>
         </Box>
 
         {/* Stats */}
+
         <Grid container spacing={3} mb={4}>
+
           <Grid item xs={12} md={4}>
             <StatCard variant="water" icon="" title="Lifetime Water Saved" value={data.lifetimeWaterSaved} subtitle="Liters" description="Every drop counts!" timeout={500} animateCards={animateCards} />
           </Grid>
@@ -199,16 +224,20 @@ const SustainabilityTracker: React.FC = () => {
 
         {/* Badges */}
         <Fade in={animateCards} timeout={1100}>
+
           <GlassCard sx={{ p: 3, mb: 3 }} elevation={0}>
             <Box display="flex" alignItems="center" gap={2} mb={3}>
               <StatsAvatar variant="badge"><WaterDrop /></StatsAvatar>
               <Typography variant="h5" fontWeight="bold" color="text.primary">Badges & Achievements</Typography>
+
             </Box>
-            <Box display="flex" flexWrap="wrap" gap={2}>
+            <Box display="flex" flexWrap="wrap" gap={1}>
               {data.badges.map((badge, index) => (
                 <Grow key={badge.name} in={animateCards} timeout={1200 + index * 100}>
+
                   <Chip label={`${badge.name} - ${badge.requirement.toLocaleString()}L`} variant="outlined"
                     sx={{ fontSize: '0.9rem', height: 40, px: 2 }} />
+
                 </Grow>
               ))}
             </Box>
@@ -217,16 +246,19 @@ const SustainabilityTracker: React.FC = () => {
 
         {/* Milestones */}
         <Fade in={animateCards} timeout={1300}>
+
           <GlassCard sx={{ p: 3, mb: 3 }} elevation={0}>
             <Box display="flex" alignItems="center" gap={2} mb={3}>
               <StatsAvatar variant="milestone"><WaterDrop /></StatsAvatar>
               <Typography variant="h5" fontWeight="bold" color="text.primary">Milestones & Challenges</Typography>
+
             </Box>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {data.milestones.map((milestone, index) => (
                 <Grid item xs={12} sm={6} md={4} key={milestone.name}>
                   <Grow in={animateCards} timeout={1400 + index * 100}>
                     <Card sx={{ 
+
                       borderRadius: 3, background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)',
                       '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }
                     }}>
@@ -238,6 +270,7 @@ const SustainabilityTracker: React.FC = () => {
                         <Typography variant="body2" color="text.secondary" mb={2}>{milestone.description}</Typography>
                         <LinearProgress variant="determinate" value={milestone.achieved ? 100 : 0} sx={{ 
                           borderRadius: 10, height: 6
+
                         }} />
                       </CardContent>
                     </Card>
@@ -250,6 +283,7 @@ const SustainabilityTracker: React.FC = () => {
 
         {/* Tree Rewards */}
         <Fade in={animateCards} timeout={1500}>
+
           <GlassCard sx={{ p: 3 }} elevation={0}>
             <Box display="flex" alignItems="center" gap={2} mb={3}>
               <StatsAvatar variant="tree"><WaterDrop /></StatsAvatar>
@@ -258,6 +292,7 @@ const SustainabilityTracker: React.FC = () => {
             <Typography variant="subtitle1" color="text.primary" sx={{ lineHeight: 1.7 }}>
               Each milestone you achieve sponsors a tree planting! You've already sponsored{' '}
               <Box component="span" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+
                 {data.treesSponsored} trees
               </Box>
               <br />
@@ -268,19 +303,22 @@ const SustainabilityTracker: React.FC = () => {
 
         {/* Dialog */}
         <Dialog open={addWaterOpen} onClose={() => setAddWaterOpen(false)} maxWidth="sm" fullWidth
-          PaperProps={{ sx: { borderRadius: 4, background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)' } }}>
+          PaperProps={{ sx: { borderRadius: 3, backgroundColor: 'rgba(255, 255, 255, 0.95)' } }}>
           <DialogTitle sx={{ textAlign: 'center', pb: 1 }}>
+
             <StatsAvatar sx={{ margin: '0 auto', mb: 2 }}><WaterDrop /></StatsAvatar>
+
             <Typography variant="h6" fontWeight="bold">Add Water Saved Today</Typography>
           </DialogTitle>
           <DialogContent>
             <TextField autoFocus margin="dense" label="Liters Saved" type="number" fullWidth variant="outlined" value={waterAmount}
               onChange={(e) => setWaterAmount(e.target.value)} helperText="Enter the amount of water you saved today" disabled={submitting}
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, '&:hover fieldset': { borderColor: '#2196f3' } } }} />
+              size="small"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, '&:hover fieldset': { borderColor: '#2196f3' } } }} />
           </DialogContent>
-          <DialogActions sx={{ p: 3, gap: 2 }}>
-            <Button onClick={() => setAddWaterOpen(false)} disabled={submitting} sx={{ borderRadius: 3 }}>Cancel</Button>
-            <AnimatedButton onClick={handleAddWater} disabled={!waterAmount || submitting} startIcon={submitting ? <CircularProgress size={20} /> : <Add />}>
+          <DialogActions sx={{ p: 2, gap: 1 }}>
+            <Button onClick={() => setAddWaterOpen(false)} disabled={submitting} size="small" sx={{ borderRadius: 2 }}>Cancel</Button>
+            <AnimatedButton onClick={handleAddWater} disabled={!waterAmount || submitting} startIcon={submitting ? <CircularProgress size={16} /> : <Add />} size="small">
               {submitting ? 'Adding...' : 'Add Water'}
             </AnimatedButton>
           </DialogActions>
