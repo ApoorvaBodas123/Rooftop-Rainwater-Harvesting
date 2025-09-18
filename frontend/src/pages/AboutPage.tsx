@@ -112,16 +112,16 @@ const AboutPage = () => {
   return (
     <Box sx={{ 
       minHeight: '100vh', 
-      backgroundColor: '#4db6ac',
+      backgroundColor: '#e0e0e0',
       py: 6
     }}>
       <Container maxWidth="md">
         {/* Short App Description */}
-        <Paper sx={{ p: { xs: 3, md: 4 }, mb: 4, textAlign: 'center', backgroundColor: '#f0f8ff'  }}>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          Rooftop Rainwater Harvesting Assessment
+        <Paper sx={{ p: { xs: 3, md: 4 }, mb: 4, textAlign: 'center', backgroundColor: 'light grey'  }}>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: 'black' }}>
+          Harvest Hub
         </Typography>
-        <Typography variant="h6" sx={{ color: 'text.secondary', mb: 3 }}>
+        <Typography variant="h8" sx={{ color: 'text.secondary', mb: 3 }}>
           Estimate rooftop rainwater harvesting potential, get recharge structure suggestions, and track your water-saving impact.
         </Typography>
       </Paper>
@@ -130,27 +130,27 @@ const AboutPage = () => {
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3, mb: 4 }}>
         {/* Why It Matters - Left Side */}
         <Box>
-          <Paper sx={{ p: 3, height: '100%', backgroundColor: '#e0f7fa' }}>
+          <Paper sx={{ p: 3, height: '100%', backgroundColor: 'white' }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
               Why It Matters
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Card sx={{ textAlign: 'center', p: 1.5, backgroundColor: '#e0f7fa' }}>
+              <Card sx={{ textAlign: 'center', p: 1.5, backgroundColor: '#F5FAFF' }}>
                 <WaterDrop sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
                 <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                  💧 India wastes 8.5 billion liters of rainwater yearly
+                  India wastes 8.5 billion liters of rainwater yearly
                 </Typography>
               </Card>
-              <Card sx={{ textAlign: 'center', p: 1.5, backgroundColor: '#e0f7fa'  }}>
+              <Card sx={{ textAlign: 'center', p: 1.5, backgroundColor: '##F5FAFF'  }}>
                 <TrendingDown sx={{ fontSize: 32, color: 'error.main', mb: 1 }} />
                 <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                  📉 Groundwater levels falling by 0.3 m/year
+                  Groundwater levels falling by 0.3 m/year
                 </Typography>
               </Card>
-              <Card sx={{ textAlign: 'center', p: 1.5, backgroundColor: '#e0f7fa' }}>
+              <Card sx={{ textAlign: 'center', p: 1.5, backgroundColor: '#F5FAFF' }}>
                 <CheckCircle sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
                 <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                  ✅ Harvesting can meet 50–80% of water demand
+                  Harvesting can meet 50–80% of water demand
                 </Typography>
               </Card>
             </Box>
@@ -159,7 +159,7 @@ const AboutPage = () => {
 
         {/* Simple 3-Step Process - Right Side */}
         <Box>
-          <Paper sx={{ p: 3, height: '100%', backgroundColor: '#e0f7fa' }}>
+          <Paper sx={{ p: 3, height: '100%', backgroundColor: 'white' }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
               Simple 3-Step Process
             </Typography>
@@ -167,7 +167,7 @@ const AboutPage = () => {
               <Box sx={{ textAlign: 'center' }}>
                 <LocationOn sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                  1️⃣ Enter Location & Roof Details
+                  1. Enter Location & Roof Details
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Provide location and roof specifications
@@ -176,7 +176,7 @@ const AboutPage = () => {
               <Box sx={{ textAlign: 'center' }}>
                 <Calculate sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                  2️⃣ Get Water Potential + Cost
+                  2. Get Water Potential + Cost
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Receive detailed analysis and breakdown
@@ -185,7 +185,7 @@ const AboutPage = () => {
               <Box sx={{ textAlign: 'center' }}>
                 <Build sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                  3️⃣ Start Building & Save Water
+                  3. Start Building & Save Water
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Implement solution and make impact
@@ -211,8 +211,8 @@ const AboutPage = () => {
             fontSize: '1.2rem',
             borderRadius: 3,
             boxShadow: 3,
-            backgroundColor: 'green',
-            color: 'black',
+            backgroundColor: 'black',
+            color: 'white',
             '&:hover': {
               backgroundColor: '#00796b',
               boxShadow: 6
@@ -245,7 +245,7 @@ const AboutPage = () => {
         fullWidth
       >
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          🤖 Ask Me Anything
+          Ask Me Anything
           <IconButton onClick={() => setChatOpen(false)}>
             <Close />
           </IconButton>
@@ -256,7 +256,7 @@ const AboutPage = () => {
             {chatMessages.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 4 }}>
                 <Typography variant="body2" color="text.secondary">
-                  👋 Hi! I can answer any questions about rainwater harvesting, water conservation, costs, installation, and more. Try asking me anything!
+                  Hi! I can answer any questions about rainwater harvesting, water conservation, costs, installation, and more. Try asking me anything!
                 </Typography>
               </Box>
             ) : (
@@ -288,7 +288,7 @@ const AboutPage = () => {
               <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 1 }}>
                 <Paper sx={{ p: 1.5, backgroundColor: 'grey.100' }}>
                   <Typography variant="body2" color="text.secondary">
-                    🤖 Typing...
+                    Typing...
                   </Typography>
                 </Paper>
               </Box>

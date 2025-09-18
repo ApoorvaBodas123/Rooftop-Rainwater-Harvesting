@@ -103,8 +103,8 @@ const SignupPage = () => {
           <div style={{ width: '100%', maxWidth: '600px' }}>
             <Paper elevation={3} sx={authPaperStyle}>
               <Box sx={{ textAlign: 'center', mb: 4 }}>
-                <LockOutlined sx={{ fontSize: 50, color: 'primary.main', mb: 1 }} />
-                <Typography component="h1" variant="h4" sx={authTitleStyle}>
+                <LockOutlined sx={{ fontSize: 50, color: '#000000', mb: 1 }} />
+                <Typography component="h1" variant="h4" sx={{ ...authTitleStyle, color: '#000000' }}>
                   {t('auth.signup.title')}
                 </Typography>
               </Box>
@@ -121,11 +121,22 @@ const SignupPage = () => {
                   autoFocus
                   value={formData.name}
                   onChange={handleChange}
-                  sx={authTextFieldStyle}
+                  sx={{
+                    ...authTextFieldStyle,
+                    '& .MuiInputLabel-root': {
+                      color: '#000000',
+                      '&.Mui-focused': {
+                        color: '#000000',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#000000',
+                    },
+                  }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <PersonOutline color="primary" />
+                        <PersonOutline sx={{ color: '#000000' }} />
                       </InputAdornment>
                     ),
                   }}
@@ -141,11 +152,22 @@ const SignupPage = () => {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  sx={authTextFieldStyle}
+                  sx={{
+                    ...authTextFieldStyle,
+                    '& .MuiInputLabel-root': {
+                      color: '#000000',
+                      '&.Mui-focused': {
+                        color: '#000000',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#000000',
+                    },
+                  }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <EmailOutlined color="primary" />
+                        <EmailOutlined sx={{ color: '#000000' }} />
                       </InputAdornment>
                     ),
                   }}
@@ -161,11 +183,22 @@ const SignupPage = () => {
                   id="password"
                   value={formData.password}
                   onChange={handleChange}
-                  sx={authTextFieldStyle}
+                  sx={{
+                    ...authTextFieldStyle,
+                    '& .MuiInputLabel-root': {
+                      color: '#000000',
+                      '&.Mui-focused': {
+                        color: '#000000',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#000000',
+                    },
+                  }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LockOutlined color="primary" />
+                        <LockOutlined sx={{ color: '#000000' }} />
                       </InputAdornment>
                     ),
                     endAdornment: (
@@ -175,6 +208,7 @@ const SignupPage = () => {
                           onClick={() => setShowPassword(!showPassword)}
                           edge="end"
                           size="large"
+                          sx={{ color: '#000000' }}
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
@@ -193,11 +227,22 @@ const SignupPage = () => {
                   id="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  sx={authTextFieldStyle}
+                  sx={{
+                    ...authTextFieldStyle,
+                    '& .MuiInputLabel-root': {
+                      color: '#000000',
+                      '&.Mui-focused': {
+                        color: '#000000',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#000000',
+                    },
+                  }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LockOutlined color="primary" />
+                        <LockOutlined sx={{ color: '#000000' }} />
                       </InputAdornment>
                     ),
                     endAdornment: (
@@ -207,6 +252,7 @@ const SignupPage = () => {
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           edge="end"
                           size="large"
+                          sx={{ color: '#000000' }}
                         >
                           {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
@@ -233,9 +279,9 @@ const SignupPage = () => {
                   {loading ? t('auth.loading') : t('auth.signup.button')}
                 </Button>
 
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 1 }}>
-                  <Link component={RouterLink} to="/login" sx={authLinkStyle}>
-                    {t('auth.signup.alreadyHaveAccount')}
+                <Box sx={{ mt: 3, textAlign: 'center' }}>
+                  <Link component={RouterLink} to="/login" variant="body2" sx={{ ...authLinkStyle, color: '#000000' }}>
+                    Already have an account? <span style={{ color: '#000000' }}>Sign In</span>
                   </Link>
                 </Box>
 

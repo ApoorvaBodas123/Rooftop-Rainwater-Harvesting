@@ -25,6 +25,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import NatureIcon from '@mui/icons-material/Nature';
 import MenuIcon from '@mui/icons-material/Menu';
+
 import { useState, useEffect } from 'react';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -42,38 +43,49 @@ const darkText = '#0f172a';   // slate-900
 const subtleText = '#334155'; // slate-700
 const cardBg = 'rgba(255,255,255,0.94)';
 
+
 // Page background wrapper (bring back subtle rain ripples image with soft overlay)
 const PageWrapper = styled(Box)(() => ({
+
   backgroundImage: `linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=2000&q=60')`,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   backgroundAttachment: 'fixed',
+
   minHeight: '100vh',
   width: '100%',
+  backgroundColor: '#f5f5f5',
 }));
 
 // Overlay wrapper (used for BOTH hero + features for seamless blend)
 const OverlayWrapper = styled(Box)(() => ({
+
   background: 'transparent',
   width: '100%',
   color: darkText,
+
 }));
 
 // HeroBox
 const HeroBox = styled(Box)(() => ({
   position: 'relative',
+
   minHeight: '75vh',
+
   overflow: 'hidden',
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
   textAlign: 'center',
+  paddingTop: 12,
+  paddingBottom: 10,
 }));
 
 const FeatureCard = styled(Card)(() => ({
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
+
   borderRadius: 16,
   boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)',
   transition: 'transform 0.35s ease, box-shadow 0.35s ease',
@@ -81,6 +93,7 @@ const FeatureCard = styled(Card)(() => ({
   '&:hover': {
     transform: 'translateY(-8px) scale(1.01)',
     boxShadow: '0 22px 50px rgba(37, 99, 235, 0.18)',
+
   },
   animation: 'fadeInUp 0.9s ease-out forwards',
   opacity: 0,
@@ -107,9 +120,11 @@ const AnimatedButton = styled(Button)(() => ({
 }));
 
 const Navbar = styled(AppBar)(({ theme }: { theme: Theme }) => ({
+
   background: 'linear-gradient(90deg, #ffffff 0%, #f0f9ff 100%)',
   backdropFilter: 'saturate(180%) blur(10px)',
   boxShadow: '0 2px 12px rgba(37, 99, 235, 0.06)',
+
   borderBottom: `1px solid ${theme.palette.divider}`,
   color: darkText,
 }));
@@ -127,23 +142,12 @@ const AnimatedTypography = styled(Typography)(() => ({
 
 const LandingPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(null);
-
-  const [wastedWater, setWastedWater] = useState(400); // Initial value set to 400 billion
-
-  useEffect(() => {
-    // Increment the counter every 100 milliseconds
-    const timer = setInterval(() => {
-      setWastedWater(prevWastedWater => prevWastedWater + 1);
-    }, 100);
-
-    // Clean up the interval when the component unmounts
-    return () => clearInterval(timer);
-  }, []);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -155,6 +159,7 @@ const LandingPage = () => {
 
   const features = [
     {
+
       icon: <LocationOnIcon sx={{ fontSize: 30, color: '#ffffff' }} />,
       title: 'Locate your rooftop',
       description: 'Pin your home on the map in seconds to begin your harvesting journey.',
@@ -171,6 +176,7 @@ const LandingPage = () => {
       title: 'Impact you can see',
       description: 'Discover how much water you can save and the emissions you avoid each year.',
       to: '/community'
+
     }
   ];
 
@@ -178,7 +184,7 @@ const LandingPage = () => {
     { label: 'Community', path: '/community' },
     { label: 'Help', path: '/about' },
     { label: 'Tracker', path: '/tracker' },
-    { label: 'Start Assessment', path: '/assessment' },
+    { label: 'Start Assessment', path: '/assessment' }
   ];
 
   const authNavItems = isAuthenticated
@@ -195,7 +201,9 @@ const LandingPage = () => {
       {/* Navbar */}
       <Navbar position="sticky" color="transparent">
         <Container maxWidth="lg">
+
           <Toolbar variant="dense" disableGutters sx={{ display: 'flex', justifyContent: 'space-between', minHeight: { xs: 48, md: 54 } }}>
+
             <Typography 
               variant="h6" 
               component={RouterLink} 
@@ -208,12 +216,14 @@ const LandingPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 '&:hover': {
+
                     color: accentBlue, 
                 }
               }}
             >
               <WaterDropIcon sx={{ fontSize: 28, mr: 1, color: accentBlue }} />
               AmritDhara
+
             </Typography>
 
             {isMobile ? (
@@ -276,8 +286,10 @@ const LandingPage = () => {
                       mr: 1,
                       '&:hover': {
                         backgroundColor: 'transparent',
+
                         color: accentBlue,
                         borderRadius: 2,
+
                         '@media (hover: hover)': {
                           backgroundColor: 'transparent',
                         },
@@ -337,15 +349,18 @@ const LandingPage = () => {
             <Box maxWidth={1000} mx="auto">
               <WaterDropIcon 
                 sx={{ 
+
                   fontSize: 88, 
                   mb: 2, 
                   color: accentBlue,
                   filter: 'drop-shadow(0 6px 12px rgba(37, 99, 235, 0.25))', 
+
                   animation: 'float 4s ease-in-out infinite' 
                 }} 
               />
 
               <AnimatedTypography
+
                 variant="h4"
                 paragraph
                 sx={{ 
@@ -354,6 +369,7 @@ const LandingPage = () => {
                   mb: 3, 
                   animationDelay: '0.4s',
                   color: subtleText
+
                 }}
               >
                 Catch every drop. Secure every tomorrow.
@@ -362,40 +378,56 @@ const LandingPage = () => {
               {/* Live counter for wasted water */}
               <Typography
                 variant="h6"
+
                 sx={{ 
                   fontSize: { xs: '1rem', md: '1.3rem' }, 
                   mb: 3, 
                   fontWeight: 600,
                   color: darkText
                 }}
+
               >
-                India wastes <span style={{ fontWeight: 'bold' }}>{wastedWater.toLocaleString()}</span> billion liters of rainwater each year — let's change that!
+                India wastes 38-40 billion liters of rainwater each year — let's change that!
               </Typography>
 
-              <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <AnimatedButton
-                  variant="contained"
-                  onClick={() => window.location.href = '/assessment'}
-                  startIcon={<NatureIcon />}
-                >
-                  Try Our Simulator
-                </AnimatedButton>
+              <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 2 }}>
+                {isAuthenticated ? (
+                  <AnimatedButton
+                    variant="contained"
+                    onClick={() => navigate('/assessment')}
+                    startIcon={<NatureIcon />}
+                  >
+                    Go to Simulator
+                  </AnimatedButton>
+                ) : (
+                  <AnimatedButton
+                    variant="contained"
+                    onClick={() => navigate('/login', { state: { from: '/assessment' } })}
+                    startIcon={<NatureIcon />}
+                  >
+                    Try Our Simulator
+                  </AnimatedButton>
+                )}
               </Box>
             </Box>
           </Container>
         </HeroBox>
 
         {/* Features Section (no background break) */}
+
         <Box sx={{ py: { xs: 3, md: 5 } }}>
+
           <Container maxWidth="lg">
             <AnimatedTypography
               variant="h3"
               textAlign="center"
+
               mb={4}
               sx={{ 
                 fontSize: { xs: '1.6rem', md: '2.2rem' }, 
                 fontWeight: 800, 
                 color: darkText, 
+
                 animationDelay: '0.6s' 
               }}
             >
@@ -406,11 +438,12 @@ const LandingPage = () => {
               sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(3, 1fr)' },
-                gap: { xs: 4, md: 6 },
+                gap: { xs: 1, md: 2 },
                 justifyContent: 'center',
               }}
             >
               {features.map((feature, index) => (
+
                 <FeatureCard key={index} sx={{ animationDelay: `${index * 0.2 + 0.6}s` }}>
                   <CardContent sx={{ textAlign: 'center', p: { xs: 4, md: 5 } }}>
                     <Box mb={3} sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -426,16 +459,21 @@ const LandingPage = () => {
                         {feature.icon}
                       </Box>
                     </Box>
+
                     <AnimatedTypography
                       variant="h4"
                       gutterBottom
                       fontWeight="bold"
+
                       sx={{ fontSize: { xs: '1.2rem', md: '1.4rem' }, color: darkText }}
+
                     >
                       {feature.title}
                     </AnimatedTypography>
                     <AnimatedTypography
+
                       sx={{ fontSize: { xs: '0.95rem', md: '1.0rem' }, color: subtleText }}
+
                     >
                       {feature.description}
                     </AnimatedTypography>

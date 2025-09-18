@@ -17,6 +17,7 @@ import SustainabilityTracker from './pages/SustainabilityTracker';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 
+
 // Theme
 const theme = createTheme({
   palette: {
@@ -33,12 +34,14 @@ const theme = createTheme({
       contrastText: '#fff',
     },
     background: {
+
       default: '#f5f9ff',
       paper: '#ffffff',
     },
     text: {
       primary: '#0f172a',
       secondary: '#334155',
+
     },
   },
   typography: {
@@ -100,6 +103,7 @@ function App() {
                 
                 {/* Public routes */}
                 <Route path="/about" element={<AboutPage />} />
+
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 

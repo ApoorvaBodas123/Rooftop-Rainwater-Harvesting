@@ -146,23 +146,23 @@ const CommunityImpactDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#eeeeee] flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+    <div className="min-h-screen bg-[#eeeeee]">
       <Container maxWidth="xl" className="py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
-            <Droplets className="w-10 h-10 text-blue-600 animate-bounce" />
+          <h1 className="text-3xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
+            <Droplets className="w-9 h-9 text-blue-600 animate-bounce" />
             Community Impact Dashboard
-            <Leaf className="w-10 h-10 text-green-600 animate-pulse" />
+            <Leaf className="w-9 h-9 text-green-600 animate-pulse" />
           </h1>
-          <p className="text-xl text-gray-600">Track your water conservation journey and compete with neighbors!</p>
+          <p className="text-lg text-gray-600">Track your water conservation journey and compete with neighbors!</p>
         </div>
 
         {/* Key Metrics */}
@@ -172,9 +172,9 @@ const CommunityImpactDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-blue-100 text-sm">Your Score</p>
-                  <p className="text-3xl font-bold">{impact?.userScore}/100</p>
+                  <p className="text-2xl font-bold">{impact?.userScore}/100</p>
                 </div>
-                <TrendingUp className="w-12 h-12 text-blue-200" />
+                <TrendingUp className="w-10 h-10 text-blue-200" />
               </div>
             </CardContent>
           </Card>
@@ -184,7 +184,7 @@ const CommunityImpactDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-green-100 text-sm">Your Rank</p>
-                  <p className="text-3xl font-bold">#{impact?.userRank}</p>
+                  <p className="text-2xl font-bold">#{impact?.userRank}</p>
                 </div>
                 {getRankIcon(impact?.userRank || 0)}
               </div>
@@ -196,9 +196,9 @@ const CommunityImpactDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-purple-100 text-sm">Water Saved</p>
-                  <p className="text-2xl font-bold">{impact?.totalIndividualWater.toLocaleString()}L</p>
+                  <p className="text-xl font-bold">{impact?.totalIndividualWater.toLocaleString()}L</p>
                 </div>
-                <Droplets className="w-12 h-12 text-purple-200" />
+                <Droplets className="w-10 h-10 text-purple-200" />
               </div>
             </CardContent>
           </Card>
@@ -208,9 +208,9 @@ const CommunityImpactDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-orange-100 text-sm">Participants</p>
-                  <p className="text-3xl font-bold">{impact?.totalParticipants}</p>
+                  <p className="text-2xl font-bold">{impact?.totalParticipants}</p>
                 </div>
-                <Users className="w-12 h-12 text-orange-200" />
+                <Users className="w-10 h-10 text-orange-200" />
               </div>
             </CardContent>
           </Card>
@@ -259,7 +259,7 @@ const CommunityImpactDashboard = () => {
               </PieChart>
             </ResponsiveContainer>
             <div className="text-center mt-4">
-              <p className="text-3xl font-bold text-green-600">{impact?.userScore}%</p>
+              <p className="text-2xl font-bold text-green-600">{impact?.userScore}%</p>
               <p className="text-gray-600">Sustainability Score</p>
             </div>
           </Card>
@@ -286,14 +286,14 @@ const CommunityImpactDashboard = () => {
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${getRankColor(neighbor.rank)}`}>
                       {neighbor.rank}
                     </div>
-                    <div className="text-2xl">{neighbor.avatar}</div>
+                    <div className="text-xl">{neighbor.avatar}</div>
                     <div>
                       <p className="font-semibold text-gray-800">{neighbor.name}</p>
-                      <p className="text-sm text-gray-600">{neighbor.waterSaved.toLocaleString()}L saved</p>
+                      <p className="text-xs text-gray-600">{neighbor.waterSaved.toLocaleString()}L saved</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-green-600">{neighbor.score}</p>
+                    <p className="text-xl font-bold text-green-600">{neighbor.score}</p>
                     <p className="text-sm text-gray-600">points</p>
                   </div>
                 </div>
@@ -311,23 +311,23 @@ const CommunityImpactDashboard = () => {
             </Typography>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <div className="text-4xl mb-2">🏊‍♂️</div>
-                <p className="text-2xl font-bold text-blue-600">{impact?.equivalents.olympicPools}</p>
+                <div className="text-3xl mb-2">🏊‍♂️</div>
+                <p className="text-xl font-bold text-blue-600">{impact?.equivalents.olympicPools}</p>
                 <p className="text-sm text-gray-600">Olympic Swimming Pools</p>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
-                <div className="text-4xl mb-2">🏠</div>
-                <p className="text-2xl font-bold text-green-600">{impact?.equivalents.households}</p>
+                <div className="text-3xl mb-2">🏠</div>
+                <p className="text-xl font-bold text-green-600">{impact?.equivalents.households}</p>
                 <p className="text-sm text-gray-600">Households Supplied</p>
               </div>
               <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                <div className="text-4xl mb-2">🌳</div>
-                <p className="text-2xl font-bold text-yellow-600">{impact?.equivalents.trees}</p>
+                <div className="text-3xl mb-2">🌳</div>
+                <p className="text-xl font-bold text-yellow-600">{impact?.equivalents.trees}</p>
                 <p className="text-sm text-gray-600">Trees Watered</p>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <div className="text-4xl mb-2">🌍</div>
-                <p className="text-2xl font-bold text-purple-600">{impact?.equivalents.carbonOffset}</p>
+                <div className="text-3xl mb-2">🌍</div>
+                <p className="text-xl font-bold text-purple-600">{impact?.equivalents.carbonOffset}</p>
                 <p className="text-sm text-gray-600">kg CO₂ Offset</p>
               </div>
             </div>

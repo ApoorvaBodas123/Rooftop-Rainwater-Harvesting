@@ -20,42 +20,27 @@ interface DashboardData {
 // Styled Components
 const BackgroundContainer = styled(Box)({
   minHeight: '100vh',
-  backgroundColor: '#f8fffe',
-  position: 'relative'
+
+  backgroundColor: '#eeeeee',
 });
 
-const StyledCard = styled(Card)<{ variant: 'water' | 'streak' | 'tree' }>(({ variant }) => {
-  const styles = {
-    water: { bg: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)', border: '#2196f3', shadow: 'rgba(33, 150, 243, 0.2)' },
-    streak: { bg: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)', border: '#4caf50', shadow: 'rgba(76, 175, 80, 0.2)' },
-    tree: { bg: 'linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)', border: '#9c27b0', shadow: 'rgba(156, 39, 176, 0.2)' }
-  }[variant];
-  
-  return {
-    background: styles.bg,
-    borderRadius: 12,
-    padding: '12px',
-    position: 'relative',
-    border: `2px solid ${styles.border}`,
-    boxShadow: `0 2px 8px ${styles.shadow}`,
-    transition: 'all 0.3s ease',
-    '&:hover': { 
-      transform: 'translateY(-2px)', 
-      boxShadow: `0 4px 12px ${styles.shadow}` 
-    }
-  };
-});
+const StyledCard = styled(Card)<{ variant: 'water' | 'streak' | 'tree' }>(() => ({
+  background: '#ffffff',
+  borderRadius: 12,
+  padding: '16px',
+  position: 'relative',
+  border: '1px solid rgba(0,0,0,0.08)',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+  transition: 'all 0.2s ease',
+  '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
+}));
 
 const GlassCard = styled(Paper)({
-  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.8) 100%)',
+  background: '#ffffff',
   borderRadius: 12,
-  border: '1px solid rgba(33, 150, 243, 0.2)',
-  boxShadow: '0 2px 8px rgba(33, 150, 243, 0.1)',
-  transition: 'all 0.3s ease',
-  '&:hover': { 
-    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 248, 255, 0.9) 100%)', 
-    transform: 'translateY(-1px)' 
-  }
+  border: '1px solid rgba(0,0,0,0.08)',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+
 });
 
 const AnimatedButton = styled(Button)({
@@ -75,10 +60,9 @@ const AnimatedButton = styled(Button)({
 });
 
 const StatsAvatar = styled(Avatar)<{ variant?: string }>(({ variant }) => ({
-  width: 40,
-  height: 40,
-  fontSize: '1.2rem',
-  boxShadow: '0 2px 8px rgba(33, 150, 243, 0.3)',
+
+  width: 48, height: 48, fontSize: '1.1rem', boxShadow: '0 2px 8px rgba(33, 150, 243, 0.2)',
+
   background: {
     water: 'linear-gradient(45deg, #2196f3, #03a9f4)',
     streak: 'linear-gradient(45deg, #4caf50, #66bb6a)',
@@ -97,14 +81,16 @@ const StatCard: React.FC<{
   return (
     <Grow in={animateCards} timeout={timeout}>
       <StyledCard variant={variant} elevation={0}>
-        <CardContent sx={{ textAlign: 'center', padding: '16px !important' }}>
-          <StatsAvatar variant={variant} sx={{ margin: '0 auto', mb: 1 }}>{icon}</StatsAvatar>
+
+        <CardContent sx={{ textAlign: 'center' }}>
+          <StatsAvatar variant={variant} sx={{ margin: '0 auto', mb: 1 }}>{''}</StatsAvatar>
           <Typography variant="caption" color="text.secondary" gutterBottom>{title}</Typography>
-          <Typography variant="h4" color={`${color}.main`} fontWeight="bold" sx={{ mb: 0.5 }}>
+          <Typography variant="h4" color="text.primary" fontWeight="bold" sx={{ mb: 0.5 }}>
             {typeof value === 'number' ? value.toLocaleString() : value}
           </Typography>
-          <Typography variant="body2" color={`${color}.main`}>{subtitle}</Typography>
-          <Typography variant="caption" color="text.secondary" mt={1}>{description}</Typography>
+          <Typography variant="subtitle2" color="text.secondary">{subtitle}</Typography>
+          <Typography variant="body2" color="text.secondary" mt={1}>{description}</Typography>
+
           {progress !== undefined && (
             <LinearProgress variant="determinate" value={progress} sx={{ 
               mt: 1, borderRadius: 4, height: 6, backgroundColor: 'rgba(0, 0, 0, 0.1)',
@@ -174,19 +160,23 @@ const SustainabilityTracker: React.FC = () => {
 
   if (loading) return (
     <BackgroundContainer>
-      <Container maxWidth="lg" sx={{ py: 4, textAlign: 'center', position: 'relative', zIndex: 2 }}>
+
+      <Container maxWidth="lg" sx={{ py: 8, textAlign: 'center', position: 'relative', zIndex: 2 }}>
         <StatsAvatar sx={{ margin: '0 auto', mb: 2 }}><WaterDrop /></StatsAvatar>
-        <Typography variant="h5" gutterBottom sx={{ color: '#1976d2', fontWeight: 'bold' }}>💧 Water Sustainability Tracker</Typography>
-        <CircularProgress sx={{ mt: 1 }} size={40} thickness={4} />
-        <Typography variant="body2" sx={{ mt: 1, color: '#666' }}>Loading your water conservation journey...</Typography>
+        <Typography variant="h5" gutterBottom sx={{ color: 'text.primary', fontWeight: 'bold' }}>Water Sustainability Tracker</Typography>
+        <CircularProgress sx={{ mt: 2 }} size={60} thickness={4} />
+        <Typography variant="body2" sx={{ mt: 2, color: '#666' }}>Loading your water conservation journey...</Typography>
+
       </Container>
     </BackgroundContainer>
   );
 
   if (!data) return (
     <BackgroundContainer>
-      <Container maxWidth="lg" sx={{ py: 4, textAlign: 'center', position: 'relative', zIndex: 2 }}>
-        <Typography variant="h5" color="error" gutterBottom>Failed to load tracker data</Typography>
+
+      <Container maxWidth="lg" sx={{ py: 8, textAlign: 'center', position: 'relative', zIndex: 2 }}>
+        <Typography variant="h5" gutterBottom color="text.primary">Failed to load tracker data</Typography>
+
         <AnimatedButton onClick={fetchDashboardData} startIcon={<Refresh />}>Retry Loading</AnimatedButton>
       </Container>
     </BackgroundContainer>
@@ -194,17 +184,17 @@ const SustainabilityTracker: React.FC = () => {
 
   return (
     <BackgroundContainer>
-      <Container maxWidth="lg" sx={{ py: 2, position: 'relative', zIndex: 2 }}>
+
+      <Container maxWidth="lg" sx={{ py: 3, position: 'relative', zIndex: 2 }}>
         
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Box display="flex" alignItems="center" gap={1}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+          <Box display="flex" alignItems="center" gap={2}>
             <StatsAvatar><WaterDrop /></StatsAvatar>
             <Box>
-              <Typography variant="h5" sx={{ 
-                fontWeight: 'bold', color: '#2196f3'
-              }}>💧 Water Sustainability Tracker</Typography>
-              <Typography variant="body2" sx={{ color: '#666' }}>Track your impact, save our planet 🌍</Typography>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.primary' }}>Water Sustainability Tracker</Typography>
+              <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>Track your impact, save our planet</Typography>
+
             </Box>
           </Box>
           <Box display="flex" gap={1}>
@@ -218,41 +208,36 @@ const SustainabilityTracker: React.FC = () => {
         </Box>
 
         {/* Stats */}
-        <Grid container spacing={2} mb={3}>
+
+        <Grid container spacing={3} mb={4}>
+
           <Grid item xs={12} md={4}>
-            <StatCard variant="water" icon="💧" title="Lifetime Water Saved" value={data.lifetimeWaterSaved} subtitle="Liters" description="Every drop counts! 🌍" timeout={500} animateCards={animateCards} />
+            <StatCard variant="water" icon="" title="Lifetime Water Saved" value={data.lifetimeWaterSaved} subtitle="Liters" description="Every drop counts!" timeout={500} animateCards={animateCards} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <StatCard variant="streak" icon="🔥" title="Current Streak" value={data.currentStreak} subtitle="Days" description={data.currentStreak >= 7 ? "Amazing streak! 🎉" : "Keep going! 💪"} timeout={700} animateCards={animateCards} />
+            <StatCard variant="streak" icon="" title="Current Streak" value={data.currentStreak} subtitle="Days" description={data.currentStreak >= 7 ? "Amazing streak!" : "Keep going!"} timeout={700} animateCards={animateCards} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <StatCard variant="tree" icon="🌳" title="Trees Sponsored" value={data.treesSponsored} subtitle="" description={`Next tree at ${data.nextTreeAt.toLocaleString()}L 🌱`} progress={data.progressToNextTree} timeout={900} animateCards={animateCards} />
+            <StatCard variant="tree" icon="" title="Trees Sponsored" value={data.treesSponsored} subtitle="" description={`Next tree at ${data.nextTreeAt.toLocaleString()}L`} progress={data.progressToNextTree} timeout={900} animateCards={animateCards} />
           </Grid>
         </Grid>
 
         {/* Badges */}
         <Fade in={animateCards} timeout={1100}>
-          <GlassCard sx={{ p: 2, mb: 2 }} elevation={0}>
-            <Box display="flex" alignItems="center" gap={1} mb={2}>
-              <StatsAvatar variant="badge">🏆</StatsAvatar>
-              <Typography variant="h6" fontWeight="bold">Badges & Achievements</Typography>
+
+          <GlassCard sx={{ p: 3, mb: 3 }} elevation={0}>
+            <Box display="flex" alignItems="center" gap={2} mb={3}>
+              <StatsAvatar variant="badge"><WaterDrop /></StatsAvatar>
+              <Typography variant="h5" fontWeight="bold" color="text.primary">Badges & Achievements</Typography>
+
             </Box>
             <Box display="flex" flexWrap="wrap" gap={1}>
               {data.badges.map((badge, index) => (
                 <Grow key={badge.name} in={animateCards} timeout={1200 + index * 100}>
-                  <Chip 
-                    label={`${badge.name} - ${badge.requirement.toLocaleString()}L`} 
-                    color={badge.earned ? 'success' : 'default'} 
-                    variant={badge.earned ? 'filled' : 'outlined'}
-                    size="small"
-                    sx={{ 
-                      fontSize: '0.8rem', 
-                      height: 32,
-                      backgroundColor: badge.earned ? '#4caf50' : 'transparent',
-                      '&:hover': { transform: 'scale(1.05)' }, 
-                      transition: 'all 0.3s ease' 
-                    }} 
-                  />
+
+                  <Chip label={`${badge.name} - ${badge.requirement.toLocaleString()}L`} variant="outlined"
+                    sx={{ fontSize: '0.9rem', height: 40, px: 2 }} />
+
                 </Grow>
               ))}
             </Box>
@@ -261,31 +246,31 @@ const SustainabilityTracker: React.FC = () => {
 
         {/* Milestones */}
         <Fade in={animateCards} timeout={1300}>
-          <GlassCard sx={{ p: 2, mb: 2 }} elevation={0}>
-            <Box display="flex" alignItems="center" gap={1} mb={2}>
-              <StatsAvatar variant="milestone">🎯</StatsAvatar>
-              <Typography variant="h6" fontWeight="bold">Milestones & Challenges</Typography>
+
+          <GlassCard sx={{ p: 3, mb: 3 }} elevation={0}>
+            <Box display="flex" alignItems="center" gap={2} mb={3}>
+              <StatsAvatar variant="milestone"><WaterDrop /></StatsAvatar>
+              <Typography variant="h5" fontWeight="bold" color="text.primary">Milestones & Challenges</Typography>
+
             </Box>
             <Grid container spacing={2}>
               {data.milestones.map((milestone, index) => (
                 <Grid item xs={12} sm={6} md={4} key={milestone.name}>
                   <Grow in={animateCards} timeout={1400 + index * 100}>
                     <Card sx={{ 
-                      borderRadius: 3, 
-                      transition: 'all 0.3s ease',
-                      backgroundColor: 'transparent',
-                      border: milestone.achieved ? '2px solid #4caf50' : '2px solid #ffc107',
-                      '&:hover': { transform: 'translateY(-2px) scale(1.02)', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }
+
+                      borderRadius: 3, background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)',
+                      '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }
                     }}>
-                      <CardContent sx={{ padding: '12px !important' }}>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                          <Typography variant="subtitle2" fontWeight="bold">{milestone.name}</Typography>
-                          {milestone.achieved && <Typography variant="body1">✅</Typography>}
+                      <CardContent>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                          <Typography variant="subtitle1" fontWeight="bold" color="text.primary">{milestone.name}</Typography>
+                          {milestone.achieved && <Chip label="Achieved" size="small" variant="outlined" />}
                         </Box>
-                        <Typography variant="caption" color="text.secondary" mb={2}>{milestone.description}</Typography>
+                        <Typography variant="body2" color="text.secondary" mb={2}>{milestone.description}</Typography>
                         <LinearProgress variant="determinate" value={milestone.achieved ? 100 : 0} sx={{ 
-                          borderRadius: 4, height: 6, backgroundColor: 'rgba(0,0,0,0.1)',
-                          '& .MuiLinearProgress-bar': { backgroundColor: milestone.achieved ? '#4caf50' : '#ffc107', borderRadius: 4 }
+                          borderRadius: 10, height: 6
+
                         }} />
                       </CardContent>
                     </Card>
@@ -298,17 +283,20 @@ const SustainabilityTracker: React.FC = () => {
 
         {/* Tree Rewards */}
         <Fade in={animateCards} timeout={1500}>
-          <GlassCard sx={{ p: 2, backgroundColor: 'transparent', border: '2px solid rgba(76, 175, 80, 0.3)' }} elevation={0}>
-            <Box display="flex" alignItems="center" gap={1} mb={2}>
-              <StatsAvatar variant="tree">🌳</StatsAvatar>
-              <Typography variant="h6" fontWeight="bold">Tree Planting Rewards</Typography>
+
+          <GlassCard sx={{ p: 3 }} elevation={0}>
+            <Box display="flex" alignItems="center" gap={2} mb={3}>
+              <StatsAvatar variant="tree"><WaterDrop /></StatsAvatar>
+              <Typography variant="h5" fontWeight="bold" color="text.primary">Tree Planting Rewards</Typography>
             </Box>
-            <Typography variant="body2" color="text.primary" sx={{ lineHeight: 1.6 }}>
+            <Typography variant="subtitle1" color="text.primary" sx={{ lineHeight: 1.7 }}>
               Each milestone you achieve sponsors a tree planting! You've already sponsored{' '}
-              <Box component="span" sx={{ color: '#4caf50', fontWeight: 'bold', fontSize: '1.1em' }}>
+              <Box component="span" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+
                 {data.treesSponsored} trees
-              </Box> 🌱<br />
-              Every 3,000 liters saved = 1 tree planted. Keep saving water to grow our forest! 🌲
+              </Box>
+              <br />
+              Every 3,000 liters saved = 1 tree planted. Keep saving water to grow our forest!
             </Typography>
           </GlassCard>
         </Fade>
@@ -317,7 +305,9 @@ const SustainabilityTracker: React.FC = () => {
         <Dialog open={addWaterOpen} onClose={() => setAddWaterOpen(false)} maxWidth="sm" fullWidth
           PaperProps={{ sx: { borderRadius: 3, backgroundColor: 'rgba(255, 255, 255, 0.95)' } }}>
           <DialogTitle sx={{ textAlign: 'center', pb: 1 }}>
-            <StatsAvatar sx={{ margin: '0 auto', mb: 1 }}>💧</StatsAvatar>
+
+            <StatsAvatar sx={{ margin: '0 auto', mb: 2 }}><WaterDrop /></StatsAvatar>
+
             <Typography variant="h6" fontWeight="bold">Add Water Saved Today</Typography>
           </DialogTitle>
           <DialogContent>
