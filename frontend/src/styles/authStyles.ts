@@ -13,7 +13,7 @@ export const authContainerStyle = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  background: 'linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%)',
+  background: '#eeeeee',
 };
 
 export const authFormStyle = {
