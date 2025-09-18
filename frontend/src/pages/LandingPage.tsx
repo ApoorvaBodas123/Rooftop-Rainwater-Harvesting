@@ -32,44 +32,40 @@ const accentColor = '#FFFFFF';
 
 // Page background wrapper
 const PageWrapper = styled(Box)(() => ({
-  backgroundImage: 'url("https://static.vecteezy.com/system/resources/previews/041/731/486/large_2x/ai-generated-water-drop-close-up-with-yellow-light-background-free-photo.jpeg")',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  backgroundAttachment: 'fixed',
   minHeight: '100vh',
   width: '100%',
+  backgroundColor: '#f5f5f5',
 }));
 
 // Overlay wrapper (used for BOTH hero + features for seamless blend)
 const OverlayWrapper = styled(Box)(() => ({
-  background: 'linear-gradient(rgba(0, 77, 64, 0.7), rgba(0, 121, 107, 0.7))',
   width: '100%',
-  color: '#ffffff',
 }));
 
 // HeroBox
 const HeroBox = styled(Box)(() => ({
   position: 'relative',
-  minHeight: '100vh',
+  minHeight: 'auto',
   overflow: 'hidden',
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
   textAlign: 'center',
+  paddingTop: 12,
+  paddingBottom: 10,
 }));
 
 const FeatureCard = styled(Card)(() => ({
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
-  borderRadius: 20,
+  borderRadius: 12,
   boxShadow: '0 12px 48px rgba(0,0,0,0.08)',
   transition: 'all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)',
-  background: 'rgba(255, 255, 255, 0.15)',
-  backdropFilter: 'blur(5px)',
+  background: '#f5f5f5',
   '&:hover': {
-    transform: 'translateY(-15px) rotate(1deg)',
-    boxShadow: '0 20px 60px rgba(76, 175, 80, 0.25)',
+    transform: 'translateY(-5px)',
+    boxShadow: '0 16px 48px rgba(0,0,0,0.12)',
   },
   animation: 'fadeInUp 1s ease-out forwards',
   opacity: 0,
@@ -95,8 +91,7 @@ const AnimatedButton = styled(Button)(() => ({
 }));
 
 const Navbar = styled(AppBar)(({ theme }: { theme: Theme }) => ({
-  background: '#004B49', 
-  backdropFilter: 'blur(10px)',
+  background: '#000000',
   boxShadow: 'none',
   borderBottom: `1px solid ${theme.palette.divider}`,
   color: '#ffffff',
@@ -144,17 +139,17 @@ const LandingPage = () => {
 
   const features = [
     {
-      icon: <LocationOnIcon sx={{ fontSize: 70, color: '#ffffff' }} />,
+      icon: <LocationOnIcon sx={{ fontSize: 40, color: '#616161' }} />,
       title: t('landing.features.items.0.title'),
       description: t('landing.features.items.0.description')
     },
     {
-      icon: <CalculateIcon sx={{ fontSize: 70, color: '#ffffff' }} />,
+      icon: <CalculateIcon sx={{ fontSize: 40, color: '#616161' }} />,
       title: t('landing.features.items.1.title'),
       description: t('landing.features.items.1.description')
     },
     {
-      icon: <NatureIcon sx={{ fontSize: 70, color: '#ffffff' }} />,
+      icon: <NatureIcon sx={{ fontSize: 40, color: '#616161' }} />,
       title: t('landing.features.items.2.title'),
       description: t('landing.features.items.2.description')
     }
@@ -164,7 +159,7 @@ const LandingPage = () => {
     { label: 'Community', path: '/community' },
     { label: 'Help', path: '/about' },
     { label: 'Tracker', path: '/tracker' },
-    { label: 'Start Assessment', path: '/assessment' },
+    { label: 'Start Assessment', path: '/assessment' }
   ];
 
   const authNavItems = isAuthenticated
@@ -181,7 +176,7 @@ const LandingPage = () => {
       {/* Navbar */}
       <Navbar position="static" color="transparent">
         <Container maxWidth="lg">
-          <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Toolbar variant="dense" disableGutters sx={{ display: 'flex', justifyContent: 'space-between', minHeight: 48 }}>
             <Typography 
               variant="h6" 
               component={RouterLink} 
@@ -194,12 +189,12 @@ const LandingPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 '&:hover': {
-                    color: '#000000', 
+                    color: '#e3f2fd', 
                 }
               }}
             >
               <WaterDropIcon sx={{ fontSize: 40, mr: 1 }} />
-              Rooftop Rainwater Harvesting
+              Harvest Hub
             </Typography>
             {isMobile ? (
               <>
@@ -261,7 +256,7 @@ const LandingPage = () => {
                       mr: 1,
                       '&:hover': {
                         backgroundColor: 'transparent',
-                        color: '#000000',
+                        color: '#e3f2fd',
                         '@media (hover: hover)': {
                           backgroundColor: 'transparent',
                         },
@@ -321,9 +316,9 @@ const LandingPage = () => {
             <Box maxWidth={1000} mx="auto">
               <WaterDropIcon 
                 sx={{ 
-                  fontSize: 120, 
-                  mb: 4, 
-                  filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.4))', 
+                  fontSize: 72, 
+                  mb: 0.75, 
+                  color: '#616161',
                   animation: 'float 4s ease-in-out infinite' 
                 }} 
               />
@@ -333,26 +328,26 @@ const LandingPage = () => {
                 gutterBottom
                 fontWeight="bold"
                 sx={{ 
-                  fontSize: { xs: '2.5rem', md: '4.5rem' }, 
+                  fontSize: { xs: '1.2rem', md: '2.25rem' }, 
                   letterSpacing: '-2px', 
-                  textShadow: '0 4px 8px rgba(0,0,0,0.3)', 
+
                   animationDelay: '0.2s',
-                  color: '#ffffff' // Explicitly set text color to white
+                  mb: 1
+
                 }}
               >
-                {t('landing.heroTitle')}
+                Harvest Today,Secure Tomorrow!
               </AnimatedTypography>
 
               <AnimatedTypography
                 variant="h4"
                 paragraph
                 sx={{ 
-                  fontSize: { xs: '1.2rem', md: '1.8rem' }, 
-                  opacity: 0.95, 
-                  mb: 6, 
-                  textShadow: '0 2px 4px rgba(0,0,0,0.2)', 
-                  animationDelay: '0.4s',
-                  color: '#ffffff' // Explicitly set text color to white
+
+                  fontSize: { xs: '0.95rem', md: '1.1rem' }, 
+                  mb: 2, 
+                  animationDelay: '0.4s' 
+
                 }}
               >
                 {t('landing.heroSubtitle')}
@@ -361,14 +356,11 @@ const LandingPage = () => {
               {/* Live counter for wasted water */}
               <Typography
                 variant="h6"
-                sx={{ 
-                  fontSize: { xs: '1rem', md: '1.3rem' }, 
-                  mb: 6, 
-                  fontWeight: 600,
-                  color: '#ffffff' // Explicitly set text color to white
-                }}
+
+                sx={{ fontSize: { xs: '0.9rem', md: '1rem' }, mb: 2, fontWeight: 600 }}
+
               >
-                India wastes <span style={{ fontWeight: 'bold' }}>{wastedWater.toLocaleString()}</span> billion liters of rainwater each year — let's change that!
+                India wastes 38-40 billion liters of rainwater each year — let's change that!
               </Typography>
 
               <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -385,17 +377,15 @@ const LandingPage = () => {
         </HeroBox>
 
         {/* Features Section (no background break) */}
-        <Box sx={{ py: { xs: 8, md: 12 } }}>
+        <Box sx={{ py: { xs: 3, md: 4 } }}>
           <Container maxWidth="lg">
             <AnimatedTypography
               variant="h3"
               textAlign="center"
-              mb={8}
+              mb={3.5}
               sx={{ 
-                fontSize: { xs: '2rem', md: '3rem' }, 
+                fontSize: { xs: '1.25rem', md: '2rem' }, 
                 fontWeight: 800, 
-                color: '#ffffff', 
-                textShadow: '0 2px 4px rgba(0,0,0,0.3)', 
                 animationDelay: '0.6s' 
               }}
             >
@@ -406,24 +396,24 @@ const LandingPage = () => {
               sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(3, 1fr)' },
-                gap: { xs: 4, md: 6 },
+                gap: { xs: 1, md: 2 },
                 justifyContent: 'center',
               }}
             >
               {features.map((feature, index) => (
-                <FeatureCard key={index} sx={{ animationDelay: `${index * 0.3 + 0.8}s` }}>
-                  <CardContent sx={{ textAlign: 'center', p: { xs: 4, md: 5 }, color: '#ffffff' }}>
-                    <Box mb={4}>{feature.icon}</Box>
+                <FeatureCard key={index} sx={{ animationDelay: `${index * 0.3 + 0.8}s`, maxWidth: 300, mx: 'auto' }}>
+                  <CardContent sx={{ textAlign: 'center', p: { xs: 2, md: 2 }, color: '#000000' }}>
+                    <Box mb={2}>{feature.icon}</Box>
                     <AnimatedTypography
                       variant="h4"
                       gutterBottom
                       fontWeight="bold"
-                      sx={{ fontSize: { xs: '1.4rem', md: '1.8rem' } }}
+                      sx={{ fontSize: { xs: '1rem', md: '1.2rem' } }}
                     >
                       {feature.title}
                     </AnimatedTypography>
                     <AnimatedTypography
-                      sx={{ fontSize: { xs: '1rem', md: '1.1rem' }, color: accentColor }}
+                      sx={{ fontSize: { xs: '0.9rem', md: '0.95rem' }, color: 'text.secondary' }}
                     >
                       {feature.description}
                     </AnimatedTypography>

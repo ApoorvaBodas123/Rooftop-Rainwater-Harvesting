@@ -23,6 +23,8 @@ import RoofDetection from '../components/RoofDetection';
 import SimpleMap from '../components/common/SimpleMap';
 import LocationSearch from '../components/common/LocationSearch';
 import LocationPermissionHelper from '../components/common/LocationPermissionHelper';
+import { geocodingService } from '../services/geocodingService';
+import { rainfallService } from '../services/rainfallService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
@@ -39,6 +41,9 @@ type FormValues = {
   location: {
     address: string;
     coordinates: [number, number];
+    city?: string;
+    state?: string;
+    district?: string;
   };
   roofArea: string;
   roofType: string;
@@ -77,7 +82,10 @@ const AssessmentPage = () => {
     defaultValues: {
       location: {
         address: '',
-        coordinates: [0, 0] as [number, number]
+        coordinates: [0, 0] as [number, number],
+        city: '',
+        state: '',
+        district: ''
       },
       roofArea: '',
       roofType: '',
@@ -90,19 +98,36 @@ const AssessmentPage = () => {
   const location = watch('location');
 
   // Handle location selection from search or map
-  const handleLocationSelect = (location: { lat: number; lng: number; address: string }) => {
+  const handleLocationSelect = async (location: { lat: number; lng: number; address: string }) => {
     setSelectedLocation(location);
     setMapCenter([location.lat, location.lng]);
     
-    // Update form values
-    setValue('location', {
-      address: location.address || '',
-      coordinates: [location.lng, location.lat]
-    });
+    try {
+      // Get detailed location information using reverse geocoding
+      const locationDetails = await geocodingService.getLocationDetails(location.lat, location.lng);
+      
+      // Update form values with detailed location info
+      setValue('location', {
+        address: locationDetails.address || location.address || '',
+        coordinates: [location.lng, location.lat],
+        city: locationDetails.city || '',
+        state: locationDetails.state || '',
+        district: locationDetails.district || ''
+      });
 
-    // Check if it's Chennai and set default rainfall
-    if (location.address && location.address.toLowerCase().includes('chennai')) {
-      setValue('averageRainfall', '1400');
+      // Auto-set rainfall based on precise location data
+      const rainfallData = await rainfallService.getRainfallData(location.lat, location.lng, locationDetails.address);
+      setValue('averageRainfall', rainfallData.annualRainfall.toString());
+    } catch (error) {
+      console.error('Error getting location details:', error);
+      // Fallback to basic location info
+      setValue('location', {
+        address: location.address || '',
+        coordinates: [location.lng, location.lat],
+        city: '',
+        state: '',
+        district: ''
+      });
     }
   };
 
@@ -185,7 +210,8 @@ const AssessmentPage = () => {
 
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#eeeeee' }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box mb={4}>
         <Button 
           startIcon={<ArrowBackIcon />} 
@@ -228,7 +254,6 @@ const AssessmentPage = () => {
                 <LocationPermissionHelper />
               </Box>
 
-              {/* AI Roof Detection */}
               <RoofDetection 
                 onAreaCalculated={(area) => setValue('roofArea', area.toString())}
               />
@@ -367,18 +392,25 @@ const AssessmentPage = () => {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
+            color="inherit"
             size="large"
             fullWidth
             disabled={isSubmitting}
             startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
-            sx={{ mt: 4, gridColumn: { xs: '1', md: '1 / -1' } }}
+            sx={{ 
+              mt: 4, 
+              gridColumn: { xs: '1', md: '1 / -1' },
+              backgroundColor: 'black',
+              color: 'white',
+              '&:hover': { backgroundColor: '#333' }
+            }}
           >
-            {isSubmitting ? t('common.submitting') : t('assessment.submit')}
+            {isSubmitting ? t('common.submitting') : t('Submit')}
           </Button>
         </form>
       </Paper>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 
