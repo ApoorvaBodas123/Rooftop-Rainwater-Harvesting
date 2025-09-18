@@ -14,8 +14,6 @@ import ResultsPage from './pages/ResultsPage';
 import AboutPage from './pages/AboutPage';
 import CommunityImpactDashboard from './pages/CommunityImpactDashboard';
 import SustainabilityTracker from './pages/SustainabilityTracker';
-<<<<<<< HEAD
-=======
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 >>>>>>> d238aaabaf1545c94ddecbec855cca69ee325f5e
@@ -103,10 +101,10 @@ function App() {
                 
                 {/* Public routes */}
                 <Route path="/about" element={<AboutPage />} />
-<<<<<<< HEAD
+
                 
                 {/** Wildcard route removed intentionally */}
-=======
+
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 
@@ -120,7 +118,6 @@ function App() {
                 
                 {/* Fallback route */}
                 <Route path="*" element={<Navigate to="/" replace />} />
->>>>>>> d238aaabaf1545c94ddecbec855cca69ee325f5e
               </Routes>
             </Router>
           </Box>
