@@ -24,11 +24,11 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import NatureIcon from '@mui/icons-material/Nature';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Colors
 const secondaryColor = '#000000ff';
-const accentColor = '#FFFFFF';
 
 // Page background wrapper
 const PageWrapper = styled(Box)(() => ({
@@ -110,23 +110,12 @@ const AnimatedTypography = styled(Typography)(() => ({
 
 const LandingPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { isAuthenticated, user, logout } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(null);
-
-  const [wastedWater, setWastedWater] = useState(400); // Initial value set to 400 billion
-
-  useEffect(() => {
-    // Increment the counter every 100 milliseconds
-    const timer = setInterval(() => {
-      setWastedWater(prevWastedWater => prevWastedWater + 1);
-    }, 100);
-
-    // Clean up the interval when the component unmounts
-    return () => clearInterval(timer);
-  }, []);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -363,14 +352,24 @@ const LandingPage = () => {
                 India wastes 38-40 billion liters of rainwater each year — let's change that!
               </Typography>
 
-              <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <AnimatedButton
-                  variant="contained"
-                  onClick={() => window.location.href = '/assessment'}
-                  startIcon={<NatureIcon />}
-                >
-                  Try Our Simulator
-                </AnimatedButton>
+              <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 2 }}>
+                {isAuthenticated ? (
+                  <AnimatedButton
+                    variant="contained"
+                    onClick={() => navigate('/assessment')}
+                    startIcon={<NatureIcon />}
+                  >
+                    Go to Simulator
+                  </AnimatedButton>
+                ) : (
+                  <AnimatedButton
+                    variant="contained"
+                    onClick={() => navigate('/login', { state: { from: '/assessment' } })}
+                    startIcon={<NatureIcon />}
+                  >
+                    Try Our Simulator
+                  </AnimatedButton>
+                )}
               </Box>
             </Box>
           </Container>

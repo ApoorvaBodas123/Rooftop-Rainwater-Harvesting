@@ -93,8 +93,8 @@ const LoginPage = () => {
           <div style={{ width: '100%', maxWidth: '600px' }}>
             <Paper elevation={3} sx={authPaperStyle}>
               <Box sx={{ textAlign: 'center', mb: 4 }}>
-                <LockOutlined sx={{ fontSize: 50, color: 'primary.main', mb: 1 }} />
-                <Typography component="h1" variant="h4" sx={authTitleStyle}>
+                <LockOutlined sx={{ fontSize: 50, color: '#000000', mb: 1 }} />
+                <Typography component="h1" variant="h4" sx={{ ...authTitleStyle, color: '#000000' }}>
                   {t('auth.login.title')}
                 </Typography>
               </Box>
@@ -124,16 +124,19 @@ const LoginPage = () => {
                       },
                     },
                     '& .MuiInputLabel-root': {
-                      color: '#5f6368',
+                      color: '#000000',
                       '&.Mui-focused': {
-                        color: '#0d47a1',
+                        color: '#000000',
                       },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#000000',
                     },
                   }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <EmailOutlined color="primary" />
+                        <EmailOutlined sx={{ color: '#000000' }} />
                       </InputAdornment>
                     ),
                   }}
@@ -163,16 +166,19 @@ const LoginPage = () => {
                       },
                     },
                     '& .MuiInputLabel-root': {
-                      color: '#5f6368',
+                      color: '#000000',
                       '&.Mui-focused': {
-                        color: '#0d47a1',
+                        color: '#000000',
                       },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: '#000000',
                     },
                   }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LockOutlined color="primary" />
+                        <LockOutlined sx={{ color: '#000000' }} />
                       </InputAdornment>
                     ),
                     endAdornment: (
@@ -183,9 +189,9 @@ const LoginPage = () => {
                           edge="end"
                           size="large"
                           sx={{
-                            color: '#5f6368',
+                            color: '#000000',
                             '&:hover': {
-                              backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                              backgroundColor: 'rgba(0, 0, 0, 0.04)',
                             },
                           }}
                         >
@@ -215,8 +221,8 @@ const LoginPage = () => {
                 </Button>
 
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 1 }}>
-                  <Link component={RouterLink} to="/signup" sx={authLinkStyle}>
-                    {t('auth.login.noAccount')}
+                  <Link component={RouterLink} to="/signup" sx={{ ...authLinkStyle, color: '#000000' }}>
+                    Don't have an account? <span style={{ color: '#000000' }}>Sign Up</span>
                   </Link>
                 </Box>
 
