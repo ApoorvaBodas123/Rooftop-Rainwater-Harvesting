@@ -132,7 +132,6 @@ exports.createAssessment = async (req, res) => {
       waterDemand: parsedWaterDemand
     });
 
-<<<<<<< HEAD
     // Extract harvest data
     const harvestData = calculationResults.harvest;
     
@@ -163,7 +162,6 @@ exports.createAssessment = async (req, res) => {
         country: 'India'
       },
       roofArea: parsedRoofArea,
-=======
     // Build GeoJSON location with required type 'Point'
     const [lon, lat] = calculationResults.location.coordinates || location.coordinates || [];
     const geoLocation = {
@@ -178,7 +176,7 @@ exports.createAssessment = async (req, res) => {
     const assessment = new Assessment({
       location: geoLocation,
       roofArea,
->>>>>>> d238aaabaf1545c94ddecbec855cca69ee325f5e
+
       roofType,
       averageRainfall: parsedRainfall,
       waterDemand: parsedWaterDemand,
