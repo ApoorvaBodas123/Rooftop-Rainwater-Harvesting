@@ -165,7 +165,6 @@ const LandingPage = () => {
     { label: 'Community', path:'/community'},
     { label: 'Help', path: '/about' },
     { label: 'Tracker', path: '/tracker' },
-    { label: 'Map Demo', path: '/map-demo' },
     { label: 'Start Assessment', path: '/assessment' }
   ];
 

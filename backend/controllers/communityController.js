@@ -107,31 +107,25 @@ const checkAchievements = (assessment) => {
 // @access  Public
 exports.getCommunityImpact = async (req, res) => {
   try {
-    const { neighborhoodId = 'default', userId } = req.query;
+    const { neighborhoodId = 'chennai', userId } = req.query;
     
     // Get all assessments in the neighborhood
     const assessments = await Assessment.find({ neighborhoodId }).sort({ createdAt: -1 });
     
     if (assessments.length === 0) {
-      // Return mock data if no assessments exist
+      // Return empty structure if no assessments exist
       return res.json({
         months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        communityData: [45000,52000,48000,38000,25000,65000,78000,72000,58000,42000,35000,40000],
-        individualData: [1200,1400,1300,1000,650,1800,2100,1950,1600,1150,950,1100],
-        rainfallData: [25,30,28,20,12,45,55,52,38,25,18,22],
-        totalCommunityWater: 598000,
-        totalIndividualWater: 15800,
-        userScore: 82,
-        userRank: 3,
-        totalParticipants: 8,
-        equivalents: { olympicPools: 0, households: 3, trees: 598, carbonOffset: 179 },
-        achievements: [
-          { id: 1, title: 'Water Warrior', description: 'Saved over 10,000 liters', earned: true, icon: '💧' },
-          { id: 2, title: 'Top 5 Saver', description: 'Ranked in top 5 neighbours', earned: true, icon: '🏆' },
-          { id: 3, title: 'Consistency King', description: 'Saved water for 6 months straight', earned: true, icon: '👑' },
-          { id: 4, title: 'Community Leader', description: 'Helped 3+ neighbors start harvesting', earned: false, icon: '🌟' },
-          { id: 5, title: 'Monsoon Master', description: 'Maximized collection during monsoon', earned: true, icon: '🌧️' }
-        ]
+        communityData: [0,0,0,0,0,0,0,0,0,0,0,0],
+        individualData: [0,0,0,0,0,0,0,0,0,0,0,0],
+        rainfallData: [0,0,0,0,0,0,0,0,0,0,0,0],
+        totalCommunityWater: 0,
+        totalIndividualWater: 0,
+        userScore: 0,
+        userRank: 1,
+        totalParticipants: 0,
+        equivalents: { olympicPools: 0, households: 0, trees: 0, carbonOffset: 0 },
+        achievements: []
       });
     }
     
@@ -214,35 +208,30 @@ exports.getCommunityImpact = async (req, res) => {
 // @access  Public
 exports.getLeaderboard = async (req, res) => {
   try {
-    const { neighborhoodId = 'default', userId } = req.query;
+    const { neighborhoodId = 'chennai', userId } = req.query;
     
     // Get all assessments in the neighborhood
     const assessments = await Assessment.find({ neighborhoodId }).sort({ createdAt: -1 });
     
     if (assessments.length === 0) {
-      // Return mock data if no assessments exist
+      // Return empty leaderboard if no assessments exist
       return res.json({
-        neighbors: [
-          { id: 1, name: 'Sarah Johnson', score: 95, waterSaved: 15000, rank: 1, avatar: '👩‍🌾' },
-          { id: 2, name: 'Mike Chen', score: 88, waterSaved: 12500, rank: 2, avatar: '👨‍💼' },
-          { id: 3, name: 'You', score: 82, waterSaved: 11200, rank: 3, avatar: '🏠' },
-          { id: 4, name: 'Emma Davis', score: 78, waterSaved: 9800, rank: 4, avatar: '👩‍🎓' },
-          { id: 5, name: 'Carlos Rodriguez', score: 75, waterSaved: 9200, rank: 5, avatar: '👨‍🔧' }
-        ],
-        userPosition: 3,
-        totalParticipants: 8
+        neighbors: [],
+        userPosition: 1,
+        totalParticipants: 0
       });
     }
     
-    // Calculate scores and create leaderboard
+    // Calculate scores and create leaderboard with real user data
     const neighborsWithScores = assessments.map(assessment => {
-      const score = calculateSustainabilityScore(assessment);
+      const score = assessment.sustainabilityScore || calculateSustainabilityScore(assessment);
       return {
         id: assessment._id,
         name: assessment.userName || 'Anonymous User',
         score,
-        waterSaved: assessment.potentialHarvest.annual,
-        avatar: getRandomAvatar()
+        waterSaved: assessment.totalWaterSaved || assessment.potentialHarvest.annual,
+        avatar: getRandomAvatar(),
+        userEmail: assessment.userEmail
       };
     });
     
@@ -256,13 +245,17 @@ exports.getLeaderboard = async (req, res) => {
     
     // Find user position
     const userPosition = sortedNeighbors.findIndex(n => 
-      n.id.toString() === userId || assessments.find(a => a._id.toString() === n.id.toString())?.userEmail === userId
+      n.userEmail === userId || n.id.toString() === userId
     ) + 1;
     
-    // Mark current user
+    // Mark current user as "You" but keep their real name visible
     if (userPosition > 0) {
-      sortedNeighbors[userPosition - 1].name = 'You';
-      sortedNeighbors[userPosition - 1].avatar = '🏠';
+      const currentUser = sortedNeighbors[userPosition - 1];
+      sortedNeighbors[userPosition - 1] = {
+        ...currentUser,
+        name: `You (${currentUser.name})`,
+        avatar: '🏠'
+      };
     }
     
     res.json({

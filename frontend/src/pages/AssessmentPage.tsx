@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import {
   Box,
   Button,
@@ -27,8 +26,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+
+// API base (configurable via Vite env)
+// Use VITE_API_BASE_URL if set, otherwise default to localhost:5000
+const API_BASE = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:5000';
 
 // Form data type
 type FormValues = {
@@ -40,24 +41,13 @@ type FormValues = {
   roofType: string;
   averageRainfall: string;
   waterDemand: string;
+  userName: string;
+  userEmail: string;
 };
 
 // Default center for the map (India)
 const defaultCenter: [number, number] = [20.5937, 78.9629];
 
-// Form validation schema
-const createSchema = (t: (key: string) => string) => yup.object().shape({
-  location: yup.object().shape({
-    address: yup.string().required(t('validation.required')),
-    coordinates: yup.array().of(yup.number().required()).length(2).required()
-  }),
-  roofArea: yup.string().required(t('validation.required')),
-  roofType: yup.string().required(t('validation.required')),
-  averageRainfall: yup.string().required(t('validation.required')),
-  waterDemand: yup.string().required(t('validation.required'))
-    .required(t('assessment.waterDemandRequired'))
-    .min(1, t('assessment.waterDemandMin'))
-});
 
 const AssessmentPage = () => {
   const { t } = useTranslation();
@@ -65,11 +55,10 @@ const AssessmentPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number; address: string } | null>(null);
-  const [calculatedArea, setCalculatedArea] = useState<number | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>(defaultCenter);
 
   const { control, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormValues>({
-    resolver: yupResolver(createSchema(t)) as any,
+    mode: 'onChange',
     defaultValues: {
       location: {
         address: '',
@@ -78,7 +67,9 @@ const AssessmentPage = () => {
       roofArea: '',
       roofType: '',
       averageRainfall: '',
-      waterDemand: ''
+      waterDemand: '',
+      userName: localStorage.getItem('userName') || '',
+      userEmail: localStorage.getItem('userEmail') || ''
     }
   });
 
@@ -112,67 +103,92 @@ const AssessmentPage = () => {
     handleLocationSelect(location);
   };
 
-  // Handle area calculation from map drawing
-  const handleAreaCalculate = (area: number) => {
-    setCalculatedArea(area);
-    setValue('roofArea', area.toString());
-  };
 
   // Handle form submission
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormValues) => {
     try {
       setIsSubmitting(true);
       setError(null);
       
-      // Generate user info for community dashboard
-      const userName = `User ${Math.floor(Math.random() * 1000)}`;
-      const userEmail = `user${Math.floor(Math.random() * 1000)}@example.com`;
-      
-      // Store user info in localStorage for community dashboard
-      localStorage.setItem('userId', userEmail);
-      localStorage.setItem('userName', userName);
-      
-      // Generate neighborhood ID from location
-      const neighborhoodId = data.location.address ? 
-        data.location.address.split(',').slice(-2).join(',').trim().toLowerCase().replace(/\s+/g, '-') : 
-        'default';
-      localStorage.setItem('neighborhoodId', neighborhoodId);
-      
-      // Try to submit to backend for community dashboard data
-      try {
-        const response = await fetch('/api/assessments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...data,
-            userName,
-            userEmail
-          })
-        });
-        
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Assessment saved to backend:', result);
-        } else {
-          console.log('Backend not available, proceeding with frontend-only flow');
-        }
-      } catch (backendError) {
-        console.log('Backend not available, proceeding with frontend-only flow:', backendError);
+      // Validate required fields manually
+      if (!data.location.address || data.location.coordinates[0] === 0) {
+        throw new Error('Please select a location on the map');
+      }
+      if (!data.roofArea || parseFloat(data.roofArea) <= 0) {
+        throw new Error('Please enter a valid roof area');
+      }
+      if (!data.roofType) {
+        throw new Error('Please select a roof type');
+      }
+      if (!data.averageRainfall || parseFloat(data.averageRainfall) <= 0) {
+        throw new Error('Please enter valid average rainfall');
+      }
+      if (!data.waterDemand || parseFloat(data.waterDemand) <= 0) {
+        throw new Error('Please enter valid water demand');
+      }
+      if (!data.userName || data.userName.trim().length < 2) {
+        throw new Error('Please enter a valid name (at least 2 characters)');
+      }
+      if (!data.userEmail || !data.userEmail.includes('@')) {
+        throw new Error('Please enter a valid email address');
       }
       
-      console.log('Form data submitted:', data);
+      // Store user info in localStorage for future use
+      localStorage.setItem('userName', data.userName);
+      localStorage.setItem('userEmail', data.userEmail);
+
+      // Prepare assessment data for API
+      const assessmentData = {
+        location: {
+          address: data.location.address,
+          coordinates: data.location.coordinates
+        },
+        roofArea: parseFloat(data.roofArea),
+        roofType: data.roofType,
+        averageRainfall: parseFloat(data.averageRainfall),
+        waterDemand: parseFloat(data.waterDemand),
+        userName: data.userName,
+        userEmail: data.userEmail
+      };
+
+      console.log('Submitting assessment data:', assessmentData);
+
+      // Submit to backend API
+      const response = await fetch(`${API_BASE}/api/assessments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(assessmentData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Assessment created:', result);
+
+      // Store user info for community dashboard
+      localStorage.setItem('userId', result.data.userEmail);
+      localStorage.setItem('neighborhoodId', result.data.neighborhoodId);
+      localStorage.setItem('assessmentId', result.data._id);
+
       toast.success('Assessment submitted successfully!');
       
-      // Navigate to results with form data
-      navigate('/results', { state: { formData: data } });
+      // Navigate to results with API response data
+      navigate('/results', { state: { formData: data, assessmentResult: result.data } });
       
-    } catch (err: any) {
-      const errorMessage = err.message || 'An error occurred while submitting the form';
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || 'An error occurred while submitting the form';
       setError(errorMessage);
       toast.error(errorMessage);
       console.error('Submission error:', err);
+      
+      // Fallback to local navigation on network errors
+      console.log('Falling back to local results due to error');
+      navigate('/results', { state: { formData: data } });
     } finally {
       setIsSubmitting(false);
     }
@@ -227,6 +243,42 @@ const AssessmentPage = () => {
               <RoofDetection 
                 onAreaCalculated={(area) => setValue('roofArea', area.toString())}
               />
+
+              <Typography variant="h6" gutterBottom>
+                User Information
+              </Typography>
+              
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+                <Controller
+                  name="userName"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="Your Name"
+                      variant="outlined"
+                      error={!!errors.userName}
+                      helperText={errors.userName?.message}
+                    />
+                  )}
+                />
+                <Controller
+                  name="userEmail"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="Email Address"
+                      variant="outlined"
+                      type="email"
+                      error={!!errors.userEmail}
+                      helperText={errors.userEmail?.message}
+                    />
+                  )}
+                />
+              </Box>
 
               <Typography variant="h6" gutterBottom>
                 {t('assessment.roofDetails')}
