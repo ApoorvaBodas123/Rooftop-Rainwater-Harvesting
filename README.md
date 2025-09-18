@@ -139,15 +139,6 @@ This project aims to:
 - Mitigate urban flooding by managing stormwater runoff
 - Raise awareness about sustainable water management practices
 
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## 📄 License
 
@@ -156,43 +147,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📧 Contact
 
 For any inquiries, please open an issue in the repository or contact [Your Email].
-bash
-cd frontend
-Install dependencies:
-bash
-npm install
-Start the development server:
-bash
-npm run dev
-📂 Project Structure
-Rooftop-Rainwater-Harvesting/
-├── backend/               # Backend server code
-│   ├── config/           # Configuration files
-│   ├── controllers/      # Request handlers
-│   ├── models/           # Database models
-│   ├── routes/           # API routes
-│   └── server.js         # Main server file
-│
-├── frontend/             # Frontend React application
-│   ├── public/           # Static files
-│   └── src/              # Source code
-│       ├── components/   # Reusable UI components
-│       ├── pages/        # Application pages
-│       └── services/     # API service layer
-│
-└── README.md             # This file
-🌍 Environmental Impact
-This project aims to:
-
-Promote water conservation through efficient rainwater harvesting
-Reduce dependency on municipal water supplies
-Mitigate urban flooding by managing stormwater runoff
-Raise awareness about sustainable water management practices
-🤝 Contributing
-We welcome contributions! Please read our contributing guidelines before submitting pull requests.
-
-📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-📧 Contact
-For any inquiries, please contact [Your Email] or open an issue in the repository.
