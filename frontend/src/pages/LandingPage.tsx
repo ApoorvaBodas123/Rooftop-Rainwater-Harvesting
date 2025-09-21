@@ -337,7 +337,7 @@ const LandingPage = () => {
       {/* Overlay container (Hero + Features) */}
       <OverlayWrapper>
         {/* Hero Section */}
-        <HeroBox>
+        <HeroBox mt={12}>
           <Container maxWidth="lg">
             <Box maxWidth={1000} mx="auto">
               <WaterDropIcon 
@@ -407,7 +407,7 @@ const LandingPage = () => {
         </HeroBox>
 
         {/* Features Section (no background break) */}
-        <Box sx={{ mt: -6 }}>
+        <Box sx={{ mt: -18 }}>
           <Container maxWidth="lg">
             <AnimatedTypography
               variant="h3"
