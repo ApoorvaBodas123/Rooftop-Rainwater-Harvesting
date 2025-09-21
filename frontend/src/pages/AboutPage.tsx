@@ -119,7 +119,7 @@ const AboutPage = () => {
         {/* Short App Description */}
         <Paper sx={{ p: { xs: 3, md: 4 }, mb: 4, textAlign: 'center', backgroundColor: 'light grey'  }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: 'black' }}>
-          Harvest Hub
+          AmritDhara
         </Typography>
         <Typography variant="h8" sx={{ color: 'text.secondary', mb: 3 }}>
           Estimate rooftop rainwater harvesting potential, get recharge structure suggestions, and track your water-saving impact.
